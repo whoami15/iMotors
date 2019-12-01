@@ -14,4 +14,11 @@ function getDashboardCounts($user_id){
 	);
 }
 
+function getCategories() {
+	
+	$motor_types = \App\Models\MotorType::get();
+
+	return $motor_types;
+}
+
 ?>

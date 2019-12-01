@@ -387,7 +387,7 @@
     function l_product_slider(){
         if ( $('.l_product_slider').length ){
             $('.l_product_slider').owlCarousel({
-                loop:true,
+                loop:false,
                 margin: 30,
                 items: 4,
                 nav:true,
@@ -473,7 +473,7 @@
     function fillter_slider(){
         if ( $('.fillter_slider').length ){
             $('.fillter_slider').owlCarousel({
-                loop:true,
+                loop:false,
                 margin: 30,
                 items: 3,
                 nav:true,

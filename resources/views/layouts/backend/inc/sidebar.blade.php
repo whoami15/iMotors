@@ -14,21 +14,37 @@
 
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+				@if(Auth::user()->role == 1)
 				<li class="nav-item">
-					<a href="{{ url('/') }}" class="nav-link active">
+					<a href="{{ url('/dashboard') }}" class="nav-link active">
 						<i class="nav-icon fas fa-tachometer-alt"></i>
 						<p>
 							Dashboard
 						</p>
 					</a>
 				</li>
-                <li class="nav-item">
-                    <a href="{{ url('/') }}" class="nav-link">
-                        <i class="nav-icon fas fa-clipboard-list"></i>
-                        <p>
-                            Applications
-                        </p>
-                    </a>
+				<li class="nav-item has-treeview">
+					<a href="#" class="nav-link">
+						<i class="nav-icon fas fa-clipboard-list"></i>
+						<p>
+							Applications
+							<i class="right fas fa-angle-left"></i>
+						</p>
+					</a>
+					<ul class="nav nav-treeview">
+						<li class="nav-item">
+							<a href="{{ url('/application') }}" class="nav-link active">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Apply</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="{{ url('/application/history') }}" class="nav-link">
+								<i class="far fa-circle nav-icon"></i>
+								<p>List</p>
+							</a>
+						</li>
+					</ul>
 				</li>
 				<li class="nav-item has-treeview">
 					<a href="#" class="nav-link">
@@ -53,6 +69,110 @@
 						</li>
 					</ul>
 				</li>
+				@elseif(Auth::user()->role == 2)
+				<li class="nav-item">
+					<a href="{{ url('/admin') }}" class="nav-link active">
+						<i class="nav-icon fas fa-tachometer-alt"></i>
+						<p>
+							Dashboard
+						</p>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="{{ url('/admin/applications') }}" class="nav-link">
+						<i class="nav-icon fas fa-clipboard-list"></i>
+						<p>
+							Applications
+						</p>
+					</a>
+				</li>
+				<li class="nav-item has-treeview">
+					<a href="#" class="nav-link">
+						<i class="nav-icon fas fa-box-open"></i>
+						<p>
+							Products
+							<i class="right fas fa-angle-left"></i>
+						</p>
+					</a>
+					<ul class="nav nav-treeview">
+						<li class="nav-item">
+							<a href="{{ url('/admin/products/add') }}" class="nav-link active">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Add</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="{{ url('/admin/products') }}" class="nav-link">
+								<i class="far fa-circle nav-icon"></i>
+								<p>List</p>
+							</a>
+						</li>
+					</ul>
+				</li>
+				<li class="nav-item has-treeview">
+					<a href="#" class="nav-link">
+						<i class="nav-icon fas fa-money-bill-alt"></i>
+						<p>
+							Payments
+							<i class="right fas fa-angle-left"></i>
+						</p>
+					</a>
+					<ul class="nav nav-treeview">
+						<li class="nav-item">
+							<a href="{{ url('/') }}" class="nav-link active">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Paid</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="{{ url('/') }}" class="nav-link">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Due</p>
+							</a>
+						</li>
+					</ul>
+				</li>
+				@elseif(Auth::user()->role == 3)
+				<li class="nav-item">
+					<a href="{{ url('/subadmin') }}" class="nav-link active">
+						<i class="nav-icon fas fa-tachometer-alt"></i>
+						<p>
+							Dashboard
+						</p>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="{{ url('/') }}" class="nav-link">
+						<i class="nav-icon fas fa-clipboard-list"></i>
+						<p>
+							Applications
+						</p>
+					</a>
+				</li>
+				<li class="nav-item has-treeview">
+					<a href="#" class="nav-link">
+						<i class="nav-icon fas fa-money-bill-alt"></i>
+						<p>
+							Payments
+							<i class="right fas fa-angle-left"></i>
+						</p>
+					</a>
+					<ul class="nav nav-treeview">
+						<li class="nav-item">
+							<a href="{{ url('/') }}" class="nav-link active">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Paid</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="{{ url('/') }}" class="nav-link">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Due</p>
+							</a>
+						</li>
+					</ul>
+				</li>
+				@endif
             </ul>
         </nav>
     </div>

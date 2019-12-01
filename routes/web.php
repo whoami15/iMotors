@@ -11,17 +11,14 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', array('as' => 'get-home', 'uses' => 'HomeController@getHome'));
+Route::get('/product/{slug}', array('as' => 'get-product-details', 'uses' => 'HomeController@getProductDetails'));
+Route::get('/shop', array('as' => 'get-products', 'uses' => 'HomeController@getProducts'));
 
-Route::get('/test', function () {
-    return view('home');
-});
+//Route::get('/test', function () {
+//    return view('home');
+//});
 
-Route::get('/dashboard', function () {
-    return view('member.dashboard');
-});
 
 // # AUTHENTICATION -- #
 
@@ -38,6 +35,7 @@ Route::group(['middleware' => 'revalidate'],function(){
 
     Route::get('/dashboard', array('as' => 'get-member-dashboard','uses' => 'Member\MemberController@getMemberDashboard'));
     Route::get('/member-dashboard-data', array('as' => 'get-member-dashboard-data','uses' => 'Member\MemberController@getMemberDashboardData'));
+    Route::get('/application', array('as' => 'get-member-application','uses' => 'Member\MemberController@getMemberApplication'));
     Route::get('/application/history', array('as' => 'get-member-application-history','uses' => 'Member\MemberController@getMemberApplications'));
     Route::get('/member-application-history-data', array('as' => 'get-member-application-history-data','uses' => 'Member\MemberController@getMemberApplicationsData'));
 
@@ -54,12 +52,15 @@ Route::group(['middleware' => 'revalidate'],function(){
 
     Route::get('/admin', array('as' => 'get-admin-dashboard','uses' => 'Admin\AdminController@getAdminDashboard'));
     Route::get('/admin-dashboard-data', array('as' => 'get-admin-dashboard-data','uses' => 'Admin\AdminController@getAdminDashboardData'));
-    
-    Route::get('/admin/products/add', array('as' => 'get-admin-add-products','uses' => 'Admin\AdminController@getAddProperty'));
-	Route::get('/admin/products', array('as' => 'get-admin-products','uses' => 'Admin\AdminController@getProperties'));
-	Route::get('/admin/products-data', array('as' => 'get-admin-products-data','uses' => 'Admin\AdminController@getPropertiesData'));
-	Route::get('/admin/products/edit/{id}', array('as' => 'get-admin-edit-products','uses' => 'Admin\AdminController@getEditProperty'));
-	Route::post('/admin/products/add', array('as' => 'post-admin-add-products','uses' => 'Admin\AdminController@postAddProperty'));
-	Route::post('/admin/products/{id}/edit', array('as' => 'post-admin-edit-products','uses' => 'Admin\AdminController@postEditProperty'));
+
+    Route::get('/admin/applications', array('as' => 'get-admin-applications','uses' => 'Admin\AdminController@getAdminApplications'));
+    Route::get('/admin-applications-data', array('as' => 'get-admin-applications-data','uses' => 'Admin\AdminController@getAdminApplicationsData'));
+
+    Route::get('/admin/products/add', array('as' => 'get-admin-add-products','uses' => 'Admin\AdminController@getAdminAddProduct'));
+	Route::get('/admin/products', array('as' => 'get-admin-products','uses' => 'Admin\AdminController@getAdminProducts'));
+	Route::get('/admin/products-list-data', array('as' => 'get-admin-products-data','uses' => 'Admin\AdminController@getAdminProductData'));
+	Route::get('/admin/products/edit/{id}', array('as' => 'get-admin-edit-products','uses' => 'Admin\AdminController@getAdminEditProduct'));
+	Route::post('/admin/products/add', array('as' => 'post-admin-add-products','uses' => 'Admin\AdminController@postAdminAddProduct'));
+	Route::post('/admin/products/{id}/edit', array('as' => 'post-admin-edit-products','uses' => 'Admin\AdminController@postAdminEditProduct'));
 
 });  

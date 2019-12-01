@@ -6,23 +6,27 @@
 <section class="our_latest_product">
     <div class="container">
         <div class="s_m_title">
-            <h2>Our Latest Product</h2>
+            <h2>Our Latest Products</h2>
         </div>
         <div class="l_product_slider owl-carousel">
+            @if($products)
+            @foreach($products as $product)
             <div class="item">
                 <div class="l_product_item">
                     <div class="l_p_img">
-                        <img src="{{ URL::asset('assets/frontend/img/product/l-product-1.jpg') }}" alt="">
+                        <img src="{{ $product->photos->first()['filename'] }}" alt="{{ $product->title }}">
                     </div>
                     <div class="l_p_text">
                         <ul>
-                            <li><a class="add_cart_btn" href="#">View</a></li>
+                            <li><a class="add_cart_btn" href="{{ url('/product/'.$product->slug) }}">View</a></li>
                         </ul>
-                        <h4>Womens Libero</h4>
-                        <h5>&#8369;{{ number_format(10000) }}</h5>
+                        <h4><a href="{{ url('/product/'.$product->slug) }}" style="font-size:16px;font-family:'Poppins',sans-serif;letter-spacing:.40px;color:#0b1033;font-weight:normal;padding-top:16px;padding-bottom:8px;">{{ str_limit(strip_tags($product->title), $limit = 25, $end = '...') }}</a></h4>
+                        <h5>&#8369;{{ number_format($product->price) }}</h5>
                     </div>
                 </div>
             </div>
+            @endforeach
+            @endif
         </div>
     </div>
 </section>
@@ -34,7 +38,6 @@
                     <div class="f_add_img"><img class="img-fluid" src="{{ URL::asset('assets/frontend/img/feature-add/f-add-4.jpg') }}" alt=""></div>
                     <div class="f_add_hover">
                         <h4>Best Summer <br />Collection</h4>
-                        <a class="add_btn" href="#">Shop Now <i class="arrow_right"></i></a>
                     </div>
                 </div>
             </div>
@@ -43,7 +46,6 @@
                     <div class="f_add_img"><img class="img-fluid" src="{{ URL::asset('assets/frontend/img/feature-add/f-add-5.jpg') }}" alt=""></div>
                     <div class="f_add_hover">
                         <h4>Best Summer <br />Collection</h4>
-                        <a class="add_btn" href="#">Shop Now <i class="arrow_right"></i></a>
                     </div>
                 </div>
             </div>
@@ -59,13 +61,17 @@
                         <div class="p_list_text">
                             <h3>Automatic</h3>
                             <ul>
-                                <li><a href="#">get motor by type limit 5</a></li>
+                                @if($products_automatic)
+                                @foreach($products_automatic as $products_a)
+                                <li><a href="{{ url('/product/'.$products_a->slug) }}">{{ str_limit(strip_tags($products_a->title), $limit = 15, $end = '...') }}</a></li>
+                                @endforeach
+                                @endif
                             </ul>
                         </div>
                     </div>
                     <div class="col-lg-6 col-sm-4">
                         <div class="p_list_img">
-                            <img src="{{ URL::asset('assets/frontend/img/product/p-categories-list/product-l-1.jpg') }}" alt="">
+                            <img src="{{ URL::asset('assets/frontend/img/product/p-categories-list/product-l-1.png') }}" alt="">
                         </div>
                     </div>
                 </div>
@@ -76,13 +82,17 @@
                         <div class="p_list_text">
                             <h3>Business</h3>
                             <ul>
-                                <li><a href="#">get motor by type limit 5</a></li>
+                                @if($products_business)
+                                @foreach($products_business as $product_b)
+                                <li><a href="{{ url('/product/'.$product_b->slug) }}">{{ str_limit(strip_tags($product_b->title), $limit = 15, $end = '...') }}</a></li>
+                                @endforeach
+                                @endif
                             </ul>
                         </div>
                     </div>
                     <div class="col-lg-6 col-sm-4">
                         <div class="p_list_img">
-                            <img src="{{ URL::asset('assets/frontend/img/product/p-categories-list/product-l-2.jpg') }}" alt="">
+                            <img src="{{ URL::asset('assets/frontend/img/product/p-categories-list/product-l-2.png') }}" alt="">
                         </div>
                     </div>
                 </div>
@@ -93,13 +103,17 @@
                         <div class="p_list_text">
                             <h3>Sports</h3>
                             <ul>
-                                <li><a href="#">get motor by type limit 5</a></li>
+                                @if($products_sports)
+                                @foreach($products_sports as $product_s)
+                                <li><a href="{{ url('/product/'.$product_s->slug) }}">{{ str_limit(strip_tags($product_s->title), $limit = 15, $end = '...') }}</a></li>
+                                @endforeach
+                                @endif
                             </ul>
                         </div>
                     </div>
                     <div class="col-lg-6 col-sm-4">
                         <div class="p_list_img">
-                            <img src="{{ URL::asset('assets/frontend/img/product/p-categories-list/product-l-3.jpg') }}" alt="">
+                            <img src="{{ URL::asset('assets/frontend/img/product/p-categories-list/product-l-3.png') }}" alt="">
                         </div>
                     </div>
                 </div>
@@ -119,10 +133,12 @@
                         <div class="f_product_inner">
                             <div class="media">
                                 <div class="d-flex">
-                                    <img src="{{ URL::asset('assets/frontend/img/product/featured-product/f-p-1.jpg') }}" alt="">
+                                    <img src="{{ URL::asset('assets/frontend/img/product/featured-product/honda.png') }}" alt="Honda">
                                 </div>
-                                <div class="media-body">
-                                    <h4>Honda/Yamaha</h4>
+                            </div>
+                            <div class="media">
+                                <div class="d-flex">
+                                    <img src="{{ URL::asset('assets/frontend/img/product/featured-product/yamaha.png') }}" alt="Yamaha">
                                 </div>
                             </div>
                         </div>
@@ -134,17 +150,21 @@
                             <li class="active"><a href="#">Featured Products</a></li>
                         </ul>
                         <div class="fillter_slider owl-carousel">
+                            @if($featured_products)
+                            @foreach($featured_products as $featured)
                             <div class="item">
                                 <div class="fillter_product_item">
                                     <div class="f_p_img">
-                                        <img src="{{ URL::asset('assets/frontend/img/product/fillter-product/f-product-1.jpg') }}" alt="">
+                                        <img src="{{ $featured->photos->first()['filename'] }}" alt="{{ $featured->title }}">
                                     </div>
                                     <div class="f_p_text">
-                                        <h5>Nike Max Air Vapor Power</h5>
-                                        <h4>&#8369;{{ number_format(10000) }}</h4>
+                                        <h5><a href="{{ url('/product/'.$featured->slug) }}" style="font-size:16px;font-family:'Poppins',sans-serif;letter-spacing:.40px;color:#0b1033;font-weight:normal;padding-top:16px;padding-bottom:8px;">{{ str_limit(strip_tags($featured->title), $limit = 25, $end = '...') }}</a></h5>
+                                        <h4>&#8369;{{ number_format($featured->price) }}</h4>
                                     </div>
                                 </div>
                             </div>
+                            @endforeach
+                            @endif
                         </div>
                     </div>
                 </div>

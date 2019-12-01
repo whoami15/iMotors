@@ -60,7 +60,9 @@
 <body>
     @include('layouts.frontend.inc.header')
 
+    @if(request()->is('/'))
     @include('layouts.frontend.inc.carousel')
+    @endif
 
       @yield('content')
 

@@ -42,6 +42,10 @@ class User extends Authenticatable
         return "{$this->first_name} {$this->last_name}";
     }
 
+    public function products(){
+        return $this->hasMany('App\Models\Products', 'user_id', 'id');
+    }
+
     public function application(){
         return $this->hasMany('App\Models\Application', 'user_id', 'id');
     }

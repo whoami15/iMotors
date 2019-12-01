@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Yajra\Datatables\Datatables;
 use App\Models\User;
 use App\Models\Application;
+use App\Models\Products;
 use Session;
 use Redirect;
 use Cache;
@@ -56,11 +57,40 @@ class MemberController extends Controller
                         
     }
 
+    public function getMemberApplication(Request $request) {
+
+        if($request->has('product')){
+
+            $check_product = Products::where('id',$request->product)->first();
+            
+            if($check_product) {
+
+                $products = Products::get();
+
+                return view('member.application.apply')
+                    ->with('product',$check_product)
+                    ->with('products',$products);
+            } else {
+
+                return redirect('/application');
+            }
+        } else {
+
+            $user = Auth::user();
+            
+            $products = Products::get();
+
+            return view('member.application.apply')
+                ->with('user',$user)
+                ->with('products',$products);
+        }
+    }
+
     public function getMemberApplications() {
 
         $user = Auth::user();
         
-        return view('member.application.history')->with('user',$user);      
+        return view('member.application.list')->with('user',$user);
     }
 
     public function getMemberApplicationsData(Request $request) {
@@ -69,34 +99,40 @@ class MemberController extends Controller
 
             $user = Auth::user();
     
-            $referrals = Application::where('user_id',$user->id)->orderBy('created_at','DESC');
+            $applications = Application::with('product','user')->where('user_id',$user->id)->orderBy('created_at','DESC');
             
-            if($referrals) {
+            if($applications) {
 
-                return Datatables::of($referrals)
-                ->editColumn('name', function ($referrals) {
-                    return ucwords($referrals->full_name);
+                return Datatables::of($applications)
+                ->editColumn('title', function ($applications) {
+                    return $applications->product->title;
                 })
-                ->editColumn('username', function ($referrals) {
-                    return $referrals->username; 
+                ->editColumn('price', function ($applications) {
+                    return '&#8369;'. number_format($applications->product->price); 
                 })
-                ->addColumn('details', function ($referrals) {
-                    return $referrals->mobile;
+                ->addColumn('brand', function ($applications) {
+                    return $applications->product->product_brand;
                 })
-                ->editColumn('status', function ($referrals) {
-                    if($referrals->active == 1){
-                        return '<span class="label label-success">PREMIUM</span>';
-                    } elseif($referrals->active == 0) {
-                        return '<span class="label label-danger">INACTIVE</span>';
-                    } else {
-                        return '';
+                ->editColumn('brand_type', function ($applications) {
+                    return $applications->product->brand_type;
+                })
+                ->editColumn('down_payment', function ($applications) {
+                    return $applications->product->down_payment;
+                })
+                ->addColumn('status', function ($applications) {
+                    if($applications->status == 'PENDING') {
+                        return '<span class="text-warning">PENDING</span>';
+                    } elseif($applications->status == 'APPROVED') {
+                        return '<span class="text-success">APPROVED</span>';
+                    } elseif($applications->status == 'DECLINED') {
+                        return '<span class="text-danger">DECLINED</span>';
                     }
                 })
-                ->addColumn('date', function ($referrals) {
-                    return date('F j, Y g:i a', strtotime($referrals->created_at)) . ' | ' . $referrals->created_at->diffForHumans();
+                ->addColumn('date', function ($applications) {
+                    return date('F j, Y g:i a', strtotime($applications->created_at)) . ' | ' . $applications->created_at->diffForHumans();
                 })
                 ->addIndexColumn()
-                ->rawColumns(['name','username','mobile','status','date'])
+                ->rawColumns(['title','price','brand','brand_type','down_payment','status','date'])
                 ->make(true);
 
             }else{
