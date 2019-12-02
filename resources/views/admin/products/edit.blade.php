@@ -137,13 +137,27 @@
                             <label for="title">Photos (choose to update photos)</label>
                             <input type="file" name="photos[]" accept=".png, .jpg, .jpeg" multiple/>
                         </div>
-                        <div class="form-group">
-                            <label for="offer_type">Featured</label>
-                            <select class="form-control" name="is_featured">
-                                <option value="" selected disabled>Choose</option>
-                                <option value="1" {{ $product->is_featured === 1 ? 'selected' : '' }}>Yes</option>
-                                <option value="0" {{ $product->is_featured === 0 ? 'selected' : '' }}>No</option>
-                            </select>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="offer_type">Featured</label>
+                                    <select class="form-control" name="is_featured">
+                                        <option value="" selected disabled>Choose</option>
+                                        <option value="1" {{ $product->is_featured === 1 ? 'selected' : '' }}>Yes</option>
+                                        <option value="0" {{ $product->is_featured === 0 ? 'selected' : '' }}>No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="offer_type">Active</label>
+                                    <select class="form-control" name="is_active">
+                                        <option value="" selected disabled>Choose</option>
+                                        <option value="1" {{ $product->is_active === 1 ? 'selected' : '' }}>Yes</option>
+                                        <option value="0" {{ $product->is_active === 0 ? 'selected' : '' }}>No</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                         <button type="submit" id="add_product_btn" class="btn btn-primary mt-30">UPDATE YOUR PRODUCT</button>
                     </form>

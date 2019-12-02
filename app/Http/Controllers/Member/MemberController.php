@@ -61,11 +61,11 @@ class MemberController extends Controller
 
         if($request->has('product')){
 
-            $check_product = Products::where('id',$request->product)->first();
+            $check_product = Products::active()->where('id',$request->product)->first();
             
             if($check_product) {
 
-                $products = Products::get();
+                $products = Products::active()->get();
 
                 return view('member.application.apply')
                     ->with('product',$check_product)

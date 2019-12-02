@@ -184,6 +184,7 @@ class AdminController extends Controller
             $product->price = $request->price;
             $product->payment_length = $request->payment_length;
             $product->is_featured = ($request->is_featured) == NULL ? 0 : $request->is_featured;
+            $product->is_active = 1;
 
             $product->save();
 
@@ -305,7 +306,8 @@ class AdminController extends Controller
             $product->price = $request->price;
             $product->payment_length = $request->payment_length;
             $product->is_featured = ($request->is_featured) == NULL ? 0 : $request->is_featured;
-            
+            $product->is_active = $request->is_active;
+
             $product->save();
 
             if($request->file('photos')) {

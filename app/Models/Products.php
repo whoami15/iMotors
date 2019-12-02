@@ -30,6 +30,17 @@ class Products extends Model
      */
     protected $table = 'tbl_products';
 
+    /**
+     * Scope a query to only include active products.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', 1);
+    }
+
     public function photos()
 	{
         return $this->hasMany('App\Models\Photos', 'product_id', 'id')->orderBy('id', 'ASC');
