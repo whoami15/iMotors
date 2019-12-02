@@ -15,12 +15,12 @@
 <section class="content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-4 col-md-4 col-sm-12">
+            <div class="col-lg-3 col-md-3 col-sm-12">
                 <div class="small-box bg-warning">
                     <div class="inner">
-                        <h3>1</h3>
+                        <h3>{{ $applications_count }}</h3>
 
-                        <p>APPLICATION</p>
+                        <p>APPLICATIONS</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-clipboard"></i>
@@ -28,10 +28,10 @@
                     <a href="#" class="small-box-footer"></a>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-12">
+            <div class="col-lg-3 col-md-3 col-sm-12">
                 <div class="small-box bg-success">
                     <div class="inner">
-                        <h3>1</h3>
+                        <h3>{{ $approved_applications_count }}</h3>
 
                         <p>APPROVE APPLICATION</p>
                     </div>
@@ -41,12 +41,25 @@
                     <a href="#" class="small-box-footer"></a>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-12">
+            <div class="col-lg-3 col-md-3 col-sm-12">
+                <div class="small-box bg-primary">
+                    <div class="inner">
+                        <h3>{{ $products_count }}</h3>
+
+                        <p>PRODUCTS</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-cube"></i>
+                    </div>
+                    <a href="#" class="small-box-footer"></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-12">
                 <div class="small-box bg-danger">
                     <div class="inner">
-                        <h3>10,000</h3>
+                        <h3>&#8369;10,000</h3>
 
-                        <p>DUE (dapat bayaran)</p>
+                        <p>TOTAL DUE (dapat bayaran)</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-cash"></i>
@@ -121,10 +134,10 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>sdfasdfsd</td>
-                                        <td>09090909990</td>
-                                        <td>December 1, 2019</td>
-                                        <td><strong>10,000</strong></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><strong></strong></td>
                                     </tr>
                                 </tbody>
                             </table>

@@ -61,6 +61,9 @@ Route::group(['middleware' => 'revalidate'],function(){
 	Route::get('/admin/products-list-data', array('as' => 'get-admin-products-data','uses' => 'Admin\AdminController@getAdminProductData'));
 	Route::get('/admin/products/edit/{id}', array('as' => 'get-admin-edit-products','uses' => 'Admin\AdminController@getAdminEditProduct'));
 	Route::post('/admin/products/add', array('as' => 'post-admin-add-products','uses' => 'Admin\AdminController@postAdminAddProduct'));
-	Route::post('/admin/products/{id}/edit', array('as' => 'post-admin-edit-products','uses' => 'Admin\AdminController@postAdminEditProduct'));
+    Route::post('/admin/products/{id}/edit', array('as' => 'post-admin-edit-products','uses' => 'Admin\AdminController@postAdminEditProduct'));
+    Route::post('/admin/brand/add', array('as' => 'post-admin-add-brand','uses' => 'Admin\AdminController@postAdminAddBrand'));
+    Route::post('/admin/motor_type/add', array('as' => 'post-admin-add-motor_type','uses' => 'Admin\AdminController@postAdminAddMotorType'));
+    Route::post('/admin/branch/add', array('as' => 'post-admin-add-branch','uses' => 'Admin\AdminController@postAdminAddBranch'));
 
 });  
