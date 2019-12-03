@@ -86,6 +86,60 @@ class MemberController extends Controller
         }
     }
 
+    public function postMemberApplication(Request $request) {
+        
+        $user = Auth::user();
+
+        $product = Products::where('id',$request->product_id)->first();
+
+        if(!$product) {
+
+            Session::flash('danger', 'Product not found.');
+            return Redirect::back();
+        }
+
+        $application = new Application;
+        $application->user_id = $user->id;
+        $application->product_id = $product->id;
+        $application->purpose = $request->purpose;
+        $application->unit_user = $request->unit_user;
+        $application->down_payment = $request->down_payment;
+        $application->payment_length = $request->payment_length;
+        $application->present_address = $request->present_address;
+        $application->previous_address = $request->previous_address;
+        $application->provincial_address = $request->provincial_address;
+        $application->civil_status = $request->civil_status;
+        $application->mobile = $request->mobile;
+        $application->sex = $request->sex;
+        $application->tin = $request->tin;
+        $application->birth_place = $request->birth_place;
+        $application->birth_date = $request->birth_date;
+        $application->age = $request->age;
+        $application->educational_attainment = $request->educational_attainment;
+        $application->course = $request->course;
+        $application->school = $request->school;
+        $application->year_graduated = $request->year_graduated;
+        $application->save();
+
+        Session::flash('success','Your application has been submitted. Click <a href="'. url('/application/view/' .$application->id) .'"><strong>HER</strong>E</a> to view.');
+        return Redirect::back();
+    }
+
+    public function getMemberViewApplication($id) {
+
+        $user = Auth::user();
+
+        $application = Application::where('id',$id)->where('user_id',$user->id)->first();
+
+        if(!$application) {
+
+            Session::flush('danger', 'Application not found.');
+            return Redirect::back();
+        }
+
+        return view('member.application.view')->with('application',$application);
+    }
+
     public function getMemberApplications() {
 
         $user = Auth::user();

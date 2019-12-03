@@ -36,6 +36,8 @@ Route::group(['middleware' => 'revalidate'],function(){
     Route::get('/dashboard', array('as' => 'get-member-dashboard','uses' => 'Member\MemberController@getMemberDashboard'));
     Route::get('/member-dashboard-data', array('as' => 'get-member-dashboard-data','uses' => 'Member\MemberController@getMemberDashboardData'));
     Route::get('/application', array('as' => 'get-member-application','uses' => 'Member\MemberController@getMemberApplication'));
+    Route::get('/application/view/{id}', array('as' => 'get-member-view-application','uses' => 'Member\MemberController@getMemberViewApplication'));
+    Route::post('/application', array('as' => 'post-member-application','uses' => 'Member\MemberController@postMemberApplication'));
     Route::get('/application/history', array('as' => 'get-member-application-history','uses' => 'Member\MemberController@getMemberApplications'));
     Route::get('/member-application-history-data', array('as' => 'get-member-application-history-data','uses' => 'Member\MemberController@getMemberApplicationsData'));
 

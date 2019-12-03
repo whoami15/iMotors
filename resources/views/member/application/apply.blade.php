@@ -8,6 +8,9 @@
     #editor-container {
         height: 175px;
     }
+    .form-control {
+        border: 2px solid #848484!important;
+    }
 </style>
 @stop
 
@@ -61,8 +64,8 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="brand">Product</label>
-                                    <select class="form-control" name="product_brand" required>
+                                    <label for="product_id">Product</label>
+                                    <select class="form-control" name="product_id" required>
                                         <option value="" selected disabled>Choose</option>
                                         @php
                                         $product_id = 0;
@@ -80,8 +83,8 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="branch">Purpose</label>
-                                    <select class="form-control" name="branch" required>
+                                    <label for="purpose">Purpose</label>
+                                    <select class="form-control" name="purpose" required>
                                         <option value="" selected disabled>Choose</option>
                                         <option value="SERVICE">SERVICE</option>
                                         <option value="PASSENGER">PASSENGER</option>
@@ -92,41 +95,48 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="unit_user">Who will use</label>
-                                    <input type="text" class="form-control" name="unit_user" value="{{ old('unit_user') }}" placeholder="Who will use">
+                                    <input type="text" class="form-control" name="unit_user" value="{{ old('unit_user') }}" placeholder="Who will use" required>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row mb-3">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="present_address">Present Address</label>
-                                    <input type="text" class="form-control" name="present_address" value="{{ old('present_address') }}" placeholder="Complete address">
+                                    <label for="title">Down Payment (&#8369;)</label>
+                                    <input type="text" class="form-control" name="down_payment" value="{{ old('down_payment') }}" placeholder="&#8369;" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="municipality">Municipality</label>
-                                    <input type="text" class="form-control" name="municipality" value="{{ old('municipality') }}" placeholder="Municipality">
+                                    <label for="payment_length">Payment Length (in Months)</label>
+                                    <input type="text" class="form-control" name="payment_length" value="{{ old('payment_length') }}" placeholder="e.g.: 36" required>
                                 </div>
                             </div>
+                        </div>
+                        <hr/>
+                        <div class="form-group">
+                            <label for="present_address">Present Address (No. / Street / Brgy / Municipality / Province / ZipCode)</label>
+                            <input type="text" class="form-control" name="present_address" value="{{ old('present_address') }}" placeholder="Present address" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="previous_address">Previous Address (No. / Street / Brgy / Municipality / Province / ZipCode)</label>
+                            <input type="text" class="form-control" name="previous_address" value="{{ old('previous_address') }}" placeholder="Previous address" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="provincial_address">Provincial Address (No. / Street / Brgy / Municipality / Province / ZipCode)</label>
+                            <input type="text" class="form-control" name="provincial_address" value="{{ old('provincial_address') }}" placeholder="Provincial address" required>
                         </div>
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="civil_status">Civil Status</label>
-                                    <input type="text" class="form-control" name="civil_status" value="{{ old('civil_status') }}" placeholder="Civil status">
+                                    <input type="text" class="form-control" name="civil_status" value="{{ old('civil_status') }}" placeholder="Civil status" required>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="mobile">Contact no.</label>
-                                    <input type="text" class="form-control" name="mobile" value="{{ old('mobile') }}" placeholder="Contact no. : 09xx">
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label for="age">Age</label>
-                                    <input type="text" class="form-control" name="age" value="{{ old('age') }}" placeholder="Age">
+                                    <input type="text" class="form-control" name="mobile" value="{{ old('mobile') }}" placeholder="Contact no. : 09xx" required>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -139,32 +149,68 @@
                                     </select>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row mb-3">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="title">Down Payment (&#8369;)</label>
-                                    <input type="text" class="form-control" name="down_payment" value="{{ old('down_payment') }}" placeholder="&#8369;">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="title">Price (&#8369;)</label>
-                                    <input type="text" class="form-control" name="price" value="{{ old('price') }}" placeholder="&#8369;">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="title">Payment Length (in Months)</label>
-                                    <input type="text" class="form-control" name="payment_length" value="{{ old('payment_length') }}" placeholder="e.g.: 36">
+                                    <label for="tin">TIN</label>
+                                    <input type="text" class="form-control" name="tin" value="{{ old('tin') }}" placeholder="TIN" required>
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="birth_place">Birth Place</label>
+                                    <input type="text" class="form-control" name="birth_place" value="{{ old('birth_place') }}" placeholder="Birth place address" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="birth_date">Birthdate</label>
+                                    <input type="date" class="form-control" name="birth_date" placeholder="Birthdate" max="2005-01-01" min="1930-01-01" format="yyyy-mm-dd" id="birth_date" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="age">Age</label>
+                                    <input type="text" class="form-control" name="age" value="{{ old('age') }}" placeholder="Age" required>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="educational_attainment">Educational Attainment</label>
+                                    <input type="text" class="form-control" name="educational_attainment" value="{{ old('educational_attainment') }}" placeholder="Educational Attainment" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="course">Course</label>
+                                    <input type="text" class="form-control" name="course" value="{{ old('course') }}" placeholder="Course" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="school">School</label>
+                                    <input type="text" class="form-control" name="school" value="{{ old('school') }}" placeholder="School" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="year_graduated">Year Graduated</label>
+                                    <input type="text" class="form-control" name="year_graduated" value="{{ old('year_graduated') }}" placeholder="Year graduated" required>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
                         <div class="form-group">
                             <label for="title">Photos</label>
-                            <input type="file" name="photos[]" accept=".png, .jpg, .jpeg" required multiple/>
+                            <input type="file" name="photos[]" accept=".png, .jpg, .jpeg" multiple/>
                         </div>
-                        <button type="submit" id="add_product_btn" class="btn btn-primary mt-30" type="submit">APPLY</button>
+                        <button type="submit" id="add_product_btn" class="btn btn-primary btn-block mt-30" type="submit">APPLY NOW</button>
                     </form>
                 </div>
             </div>
