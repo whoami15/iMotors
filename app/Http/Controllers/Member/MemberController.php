@@ -119,6 +119,7 @@ class MemberController extends Controller
         $application->course = $request->course;
         $application->school = $request->school;
         $application->year_graduated = $request->year_graduated;
+        $application->status = 'PENDING';
         $application->save();
 
         Session::flash('success','Your application has been submitted. Click <a href="'. url('/application/view/' .$application->id) .'"><strong>HER</strong>E</a> to view.');
@@ -185,8 +186,11 @@ class MemberController extends Controller
                 ->addColumn('date', function ($applications) {
                     return date('F j, Y g:i a', strtotime($applications->created_at)) . ' | ' . $applications->created_at->diffForHumans();
                 })
+                ->addColumn('action', function ($applications) {
+                    return '<a class="btn btn-primary btn-sm" href="/application/view/'.$applications->id.'">View</a>';  
+                })
                 ->addIndexColumn()
-                ->rawColumns(['title','price','brand','brand_type','down_payment','status','date'])
+                ->rawColumns(['title','price','brand','brand_type','down_payment','status','date','action'])
                 ->make(true);
 
             }else{

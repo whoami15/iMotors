@@ -42,6 +42,7 @@
                         <table id="content-table" class="display table" style="width: 100%; cellspacing: 0;">
                             <thead>
                             <tr>
+                                <th>#</th>
                                 <th>Product</th>
                                 <th>Price</th>
                                 <th>Down Payment</th>
