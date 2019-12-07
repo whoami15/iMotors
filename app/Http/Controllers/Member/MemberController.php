@@ -130,7 +130,9 @@ class MemberController extends Controller
 
         $user = Auth::user();
 
-        $application = Application::where('id',$id)->where('user_id',$user->id)->first();
+        $application = Application::with('product','user')->where('id',$id)->where('user_id',$user->id)->first();
+
+        $monthly_payment = ($application->product->price - $application->down_payment) / $application->payment_length;
 
         if(!$application) {
 
@@ -138,7 +140,9 @@ class MemberController extends Controller
             return Redirect::back();
         }
 
-        return view('member.application.view')->with('application',$application);
+        return view('member.application.view')
+            ->with('application',$application)
+            ->with('monthly_payment',$monthly_payment);
     }
 
     public function getMemberApplications() {
