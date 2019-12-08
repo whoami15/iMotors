@@ -43,28 +43,44 @@
                         <!-- /.col -->
                     </div>
                     <!-- info row -->
+                    @if($application->status == "PENDING")
+                    <div class="alert alert-warning mt-2" role="alert">
+                        Your Application is <strong>{{ strtoupper($application->status) }}</strong>.
+                    </div>
+                    @elseif($application->status == "APPROVED")
+                    <div class="alert alert-success mt-2" role="alert">
+                        Your Application is <strong>{{ strtoupper($application->status) }}</strong>.
+                    </div>
+                    @elseif($application->status == "DECLINED")
+                    <div class="alert alert-danger mt-2" role="alert">
+                        Your Application is <strong>{{ strtoupper($application->status) }}</strong>.
+                    </div>
+                    @endif
+
                     <div class="row invoice-info">
                         <div class="col-sm-4 invoice-col">
-                            From
+                            BASIC INFORMATION
                             <address>
-                                <strong>Admin, Inc.</strong><br>
-                                795 Folsom Ave, Suite 600<br>
-                                San Francisco, CA 94107<br>
-                                Phone: (804) 123-5432<br>
-                                Email: info@almasaeedstudio.com
+                                <strong>Name:</strong> {{ strtoupper($application->user->first_name .' '. $application->user->middle_name .' '. $application->user->last_name) }}<br>
+                                <strong>Civil Status: </strong>{{ strtoupper($application->civil_status) }}<br>
+                                <strong>Sex:</strong> {{ $application->sex }}<br>
+                                <strong>Age:</strong> {{ $application->age }}<br>
+                                <strong>Birth Date:</strong> {{ date('F j, Y', strtotime($application->birth_date)) }}<br>
+                                <strong>Phone:</strong> {{ $application->mobile }}<br>
+                                <strong>Present Address:</strong> {{ $application->present_address }}<br>
+                                <strong>TIN:</strong> {{ $application->tin }}
+                            </address>
+                        </div>
+                        <div class="col-sm-4 invoice-col">
+                            EDUCATIONAL BACKGROUND
+                            <address>
+                                <strong>Educational Attainment:</strong> {{ $application->educational_attainment }}<br>
+                                <strong>School:</strong> {{ $application->school }}<br>
+                                <strong>Year Graduated:</strong> {{ $application->year_graduated }}<br>
+                                <strong>Course:</strong> {{ $application->course }}<br>
                             </address>
                         </div>
                         <!-- /.col -->
-                        <div class="col-sm-4 invoice-col">
-                            To
-                            <address>
-                                <strong>John Doe</strong><br>
-                                795 Folsom Ave, Suite 600<br>
-                                San Francisco, CA 94107<br>
-                                Phone: (555) 539-1037<br>
-                                Email: john.doe@example.com
-                            </address>
-                        </div>
                         <!-- /.col -->
                         <div class="col-sm-4 invoice-col">
                             <br>

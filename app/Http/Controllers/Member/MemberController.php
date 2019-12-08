@@ -29,10 +29,12 @@ class MemberController extends Controller
     public function getMemberDashboard() {
 
         $user = Auth::user();
-        $applications = $user->application()->orderBy('created_at','DESC')->take(5)->get();
+        $applications = Application::with('product')->orderBy('created_at','DESC')->take(5)->get();
+        $summary = getDashboardCounts($user->id);
         
         return view('member.dashboard')
             ->with('user',$user)
+            ->with('summary',$summary)
             ->with('applications',$applications);      
     }
 
@@ -132,13 +134,13 @@ class MemberController extends Controller
 
         $application = Application::with('product','user')->where('id',$id)->where('user_id',$user->id)->first();
 
-        $monthly_payment = ($application->product->price - $application->down_payment) / $application->payment_length;
-
         if(!$application) {
 
-            Session::flush('danger', 'Application not found.');
+            Session::flash('danger', 'Application not found.');
             return Redirect::back();
         }
+
+        $monthly_payment = ($application->product->price - $application->down_payment) / $application->payment_length;
 
         return view('member.application.view')
             ->with('application',$application)

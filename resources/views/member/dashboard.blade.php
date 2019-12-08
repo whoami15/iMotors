@@ -18,9 +18,9 @@
             <div class="col-lg-4 col-md-4 col-sm-12">
                 <div class="small-box bg-warning">
                     <div class="inner">
-                        <h3>1</h3>
+                        <h3>{{ $summary['application_approve_count'] }}</h3>
 
-                        <p>APPLICATION</p>
+                        <p>PENDING APPLICATION</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-clipboard"></i>
@@ -31,9 +31,9 @@
             <div class="col-lg-4 col-md-4 col-sm-12">
                 <div class="small-box bg-success">
                     <div class="inner">
-                        <h3>1</h3>
+                        <h3>{{ $summary['application_pending_count'] }}</h3>
 
-                        <p>APPROVE APPLICATION</p>
+                        <p>APPROVED APPLICATION</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-checkmark"></i>
@@ -66,21 +66,23 @@
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th style="width: 10px">#</th>
                                         <th>Product</th>
                                         <th>Brand</th>
                                         <th>Down Payment</th>
-                                        <th>Total</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @if($applications)
+                                    @foreach($applications as $application)
                                     <tr>
-                                        <td>1.</td>
-                                        <td><strong>Product 1</strong></td>
-                                        <td>Honda</td>
-                                        <td>10,000</td>
-                                        <td><strong>50,000</strong></td>
+                                        <td>{{ $application->product->title }}</td>
+                                        <td>{{ $application->product->brand }}</td>
+                                        <td>&#8369;{{ number_format($application->down_payment) }}</td>
+                                        <td><a href="{{ url('/application/view/'.$application->id) }}">View</a></td>
                                     </tr>
+                                    @endforeach
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
