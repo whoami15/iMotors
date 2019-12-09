@@ -36,8 +36,9 @@
                 </div>
                 <div class="card-body">
                     <div class="col-md-12 text-center p-2 mt-2">
-                        <button class="btn btn-success btn-sm" ng-click="frm.sortby(1)">Approved</button>
-                        <button class="btn btn-danger btn-sm" ng-click="frm.sortby(2)">Declined</button>
+                        <button class="btn btn-warning btn-sm" ng-click="frm.sortby('PENDING')">Pending</button>
+                        <button class="btn btn-success btn-sm" ng-click="frm.sortby('APPROVED')">Approved</button>
+                        <button class="btn btn-danger btn-sm" ng-click="frm.sortby('DECLINED')">Declined</button>
                         <button class="btn btn-primary btn-sm" ng-click="frm.sortby('RECENT')">All</button>
                     </div>
                     <div class="table-responsive">
@@ -137,7 +138,7 @@
                             {data: 'DT_RowIndex', name: 'id', orderable: true, searchable: false},
                             {data: 'name', name: 'first_name', orderable: false, searchable: false},
                             {data: 'mobile', name: 'mobile', orderable: false, searchable: false},
-                            {data: 'product', name: 'product', orderable: false, searchable: false},
+                            {data: 'product', name: 'product.title', orderable: false, searchable: true},
                             {data: 'down_payment', name: 'down_payment', orderable: false, searchable: false},
                             {data: 'status', name: 'status', orderable: false, searchable: false},
                             {data: 'date', name: 'date', orderable: true, searchable: false},

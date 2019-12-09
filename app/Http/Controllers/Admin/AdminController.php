@@ -120,10 +120,10 @@ class AdminController extends Controller
                     return $applications->user->mobile;
                 })
                 ->editColumn('product', function ($applications) {
-                    return '';
+                    return $applications->product->title;
                 })
                 ->editColumn('down_payment', function ($applications) {
-                    return '';
+                    return '<strong>&#8369;'.number_format($applications->down_payment).'</strong>';
                 })
                 ->addColumn('action', function ($applications) {
                     return '<a class="btn btn-success btn-sm" href="/admin/application/view/'.$applications->id.'">View</a>';  
@@ -138,7 +138,7 @@ class AdminController extends Controller
                     }
                 })
                 ->addColumn('date', function ($applications) {
-                    return date('F j, Y g:i a', strtotime($applications->created_at));
+                    return date('F j, Y g:i a', strtotime($applications->created_at)) . ' | ' . $applications->created_at->diffForHumans();
                 })
                 ->addIndexColumn()
                 ->rawColumns(['name','mobile','product','down_payment','action','status','date'])
@@ -154,6 +154,41 @@ class AdminController extends Controller
             return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again!'),422);
         }
 
+    }
+
+    public function getAdminViewApplication($id) {
+
+        $application = Application::with('product','user')->where('id',$id)->first();
+
+        if(!$application) {
+
+            Session::flash('danger', 'Application not found.');
+            return Redirect::back();
+        }
+
+        $monthly_payment = ($application->product->price - $application->down_payment) / $application->payment_length;
+
+        return view('admin.applications.view')
+            ->with('application',$application)
+            ->with('monthly_payment',$monthly_payment);
+    }
+
+    public function postAdminUpdateApplication($id, Request $request) {
+
+        $application = Application::with('product','user')->where('id',$id)->first();
+
+        if(!$application) {
+
+            Session::flash('danger', 'Application not found.');
+            return Redirect::back();
+        }
+
+        $application->status = $request->status;
+        $application->reason = $request->reason;
+        $application->save();
+
+        Session::flash('success', 'Application has been updated.');
+        return Redirect::back();
     }
 
     // Products

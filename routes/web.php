@@ -56,6 +56,8 @@ Route::group(['middleware' => 'revalidate'],function(){
     Route::get('/admin-dashboard-data', array('as' => 'get-admin-dashboard-data','uses' => 'Admin\AdminController@getAdminDashboardData'));
 
     Route::get('/admin/applications', array('as' => 'get-admin-applications','uses' => 'Admin\AdminController@getAdminApplications'));
+    Route::get('/admin/application/view/{id}', array('as' => 'get-admin-view-application','uses' => 'Admin\AdminController@getAdminViewApplication'));
+    Route::post('/admin/application/{id}/update', array('as' => 'post-admin-update-application','uses' => 'Admin\AdminController@postAdminUpdateApplication'));
     Route::get('/admin-applications-data', array('as' => 'get-admin-applications-data','uses' => 'Admin\AdminController@getAdminApplicationsData'));
 
     Route::get('/admin/products/add', array('as' => 'get-admin-add-products','uses' => 'Admin\AdminController@getAdminAddProduct'));
