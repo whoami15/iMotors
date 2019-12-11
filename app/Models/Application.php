@@ -26,7 +26,7 @@ class Application extends Model
     }
 
     public function payment(){
-        return $this->belongsTo('App\Models\Payment', 'application_id', 'id');
+        return $this->hasMany('App\Models\Payment', 'application_id', 'id');
     }
 
 	//public function extra_fee(){
