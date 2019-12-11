@@ -271,7 +271,7 @@ class MemberController extends Controller
                     if($applications->payment) {
                         $past = Carbon::parse($applications->payment[0]->payment_date);
                         $final = $past->format('Y-m-d');
-                        return $applications->payment[0]->payment_date->diffInMonths($dt). 'month(s)';
+                        return $past->diffInMonths($dt). 'month(s)';
                     } else {
                         return 'NONE';
                     }
