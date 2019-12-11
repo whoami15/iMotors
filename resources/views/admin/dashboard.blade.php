@@ -112,8 +112,6 @@
                             </table>
                         </div>
                     </div>
-                    <div class="card-footer clearfix">
-                    </div>
                 </div>
             </div>
             <div class="col-md-12">
@@ -142,8 +140,6 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-                    <div class="card-footer clearfix">
                     </div>
                 </div>
             </div>

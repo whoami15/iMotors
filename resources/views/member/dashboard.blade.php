@@ -15,7 +15,7 @@
 <section class="content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-4 col-md-4 col-sm-12">
+            <div class="col-lg-3 col-md-3 col-sm-12">
                 <div class="small-box bg-warning">
                     <div class="inner">
                         <h3>{{ $summary['application_approve_count'] }}</h3>
@@ -28,7 +28,7 @@
                     <a href="#" class="small-box-footer"></a>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-12">
+            <div class="col-lg-3 col-md-3 col-sm-12">
                 <div class="small-box bg-success">
                     <div class="inner">
                         <h3>{{ $summary['application_pending_count'] }}</h3>
@@ -41,12 +41,25 @@
                     <a href="#" class="small-box-footer"></a>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-4 col-sm-12">
+            <div class="col-lg-3 col-md-3 col-sm-12">
                 <div class="small-box bg-danger">
                     <div class="inner">
                         <h3>10,000</h3>
 
-                        <p>DUE (dapat bayaran)</p>
+                        <p>DUE THIS MONTH (dapat bayaran)</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-cash"></i>
+                    </div>
+                    <a href="#" class="small-box-footer"></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-12">
+                <div class="small-box bg-danger">
+                    <div class="inner">
+                        <h3>10,000</h3>
+
+                        <p>TOTAL DUE (total ng dapat bayaran)</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-cash"></i>
@@ -77,7 +90,7 @@
                                     @foreach($applications as $application)
                                     <tr>
                                         <td>{{ $application->product->title }}</td>
-                                        <td>{{ $application->product->brand }}</td>
+                                        <td>{{ $application->product->product_brand }}</td>
                                         <td>&#8369;{{ number_format($application->down_payment) }}</td>
                                         <td><a href="{{ url('/application/view/'.$application->id) }}">View</a></td>
                                     </tr>
@@ -86,8 +99,6 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-                    <div class="card-footer clearfix">
                     </div>
                 </div>
             </div>
@@ -101,22 +112,18 @@
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th style="width: 10px">#</th>
                                         <th>Date</th>
                                         <th>Amount</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>1.</td>
                                         <td>December 1, 2019</td>
                                         <td><strong>10,000</strong></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-                    <div class="card-footer clearfix">
                     </div>
                 </div>
             </div>

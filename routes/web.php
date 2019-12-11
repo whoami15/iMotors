@@ -40,8 +40,10 @@ Route::group(['middleware' => 'revalidate'],function(){
     Route::post('/application', array('as' => 'post-member-application','uses' => 'Member\MemberController@postMemberApplication'));
     Route::get('/application/history', array('as' => 'get-member-application-history','uses' => 'Member\MemberController@getMemberApplications'));
     Route::get('/member-application-history-data', array('as' => 'get-member-application-history-data','uses' => 'Member\MemberController@getMemberApplicationsData'));
+    Route::get('/member-application-to-pay', array('as' => 'get-member-application-to-pay','uses' => 'Member\MemberController@getMemberApplicationsToPayData'));
 
-
+    Route::get('/loans', array('as' => 'get-member-loans','uses' => 'Member\MemberController@getMemberLoans'));
+    Route::get('/loan/pay/{id}', array('as' => 'get-member-pay-loan','uses' => 'Member\MemberController@getMemberPayLoan'));
 
     // # SUB ADMIN -- #
 

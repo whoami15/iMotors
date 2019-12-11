@@ -17,6 +17,7 @@ use DB;
 use PDF;
 use URL;
 use DateTime;
+use Carbon\Carbon;
 
 class MemberController extends Controller
 {
@@ -178,7 +179,7 @@ class MemberController extends Controller
                     return $applications->product->brand_type;
                 })
                 ->editColumn('down_payment', function ($applications) {
-                    return $applications->product->down_payment;
+                    return '&#8369;'. number_format($applications->down_payment);
                 })
                 ->addColumn('status', function ($applications) {
                     if($applications->status == 'PENDING') {
@@ -209,6 +210,94 @@ class MemberController extends Controller
             return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again!'),422);
         }
                         
+    }
+
+    public function getMemberPayLoan($id) {
+
+        $user = Auth::user();
+
+        $loan = Application::with('product','user','payment')->where('user_id',$user->id)->where('status','APPROVED')->first();
+
+        if(!$loan) {
+
+            Session::flash('danger', 'Loan not found.');
+            return Redirect::back();
+        }
+
+        $dt = Carbon::now();
+
+        $past = $loan->payment->created_at;
+
+        $months_to_pay = $past->diffInMonths($dt);
+        
+        return view('member.payment.pay')
+            ->with('user',$user)
+            ->with('loan',$loan);
+    }
+
+    public function getMemberLoans() {
+
+        $user = Auth::user();
+        
+        return view('member.payment.loans')->with('user',$user);
+    }
+    
+    public function getMemberApplicationsToPayData(Request $request) {
+
+        if ($request->wantsJson()) {
+
+            $user = Auth::user();
+    
+            $applications = Application::with('product','payment','user')->where('user_id',$user->id)->where('status','APPROVED')->orderBy('created_at','DESC');
+
+            if($applications) {
+
+                return Datatables::of($applications)
+                ->editColumn('title', function ($applications) {
+                    return $applications->product->title;
+                })
+                ->editColumn('price', function ($applications) {
+                    return '<strong>&#8369;'. number_format($applications->product->price) .'</strong>'; 
+                })
+                ->editColumn('down_payment', function ($applications) {
+                    return '<strong>&#8369;'. number_format($applications->down_payment) .'</strong>';
+                })
+                ->editColumn('months_unpaid', function ($applications) {
+                    $dt = Carbon::now();
+                    if($applications->payment) {
+                        return $applications->payment->created_at->diffInMonths($dt). 'month(s)';
+                    } else {
+                        return 'NONE';
+                    }
+                })
+                ->addColumn('status', function ($applications) {
+                    if($applications->status == 'PENDING') {
+                        return '<span class="text-warning">PENDING</span>';
+                    } elseif($applications->status == 'APPROVED') {
+                        return '<span class="text-success">APPROVED</span>';
+                    } elseif($applications->status == 'DECLINED') {
+                        return '<span class="text-danger">DECLINED</span>';
+                    }
+                })
+                ->addColumn('date', function ($applications) {
+                    return date('F j, Y g:i a', strtotime($applications->created_at)) . ' | ' . $applications->created_at->diffForHumans();
+                })
+                ->addColumn('action', function ($applications) {
+                    return '<a class="btn btn-danger btn-block" href="/loan/pay/'.$applications->id.'"><strong>PAY <i class="fa fa-arrow-right"></i></strong></a>';  
+                })
+                ->addIndexColumn()
+                ->rawColumns(['title','price','down_payment','months_unpaid','status','date','action'])
+                ->make(true);
+
+            }else{
+
+                return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again.'),422);
+            }
+
+        } else{
+
+            return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again!'),422);
+        }
     }
 
 }
