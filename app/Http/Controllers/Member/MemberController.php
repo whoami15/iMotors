@@ -225,14 +225,18 @@ class MemberController extends Controller
         }
 
         $dt = Carbon::now();
+//dd($loan->payment[0]->payment_date);
 
-        $past = $loan->payment->created_at;
+        $past = Carbon::parse($loan->payment[0]->payment_date);
+
+        $final = $past->format('Y-m-d');
 
         $months_to_pay = $past->diffInMonths($dt);
         
         return view('member.payment.pay')
             ->with('user',$user)
-            ->with('loan',$loan);
+            ->with('loan',$loan)
+            ->with('months_to_pay',$months_to_pay);
     }
 
     public function getMemberLoans() {
