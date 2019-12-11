@@ -54,11 +54,7 @@
                         {!! csrf_field() !!}
                         <h3>
                             @if($loan)
-                            @php
-                            $dt     = \Carbon\Carbon::now();
-                            $past   = $loan->created_at;
-                            @endphp
-                            Month(s) to Pay: {{ $past->diffInMonths($dt) }}
+                            Month(s) to Pay: {{ $months_to_pay }}
                             @endif
                         </h3>
                         <div class="row">
