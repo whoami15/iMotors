@@ -225,8 +225,11 @@ class MemberController extends Controller
         }
 
         $dt = Carbon::now();
+//dd($loan->payment[0]->payment_date);
 
-        $past = $loan->payment->created_at;
+        $past = Carbon::parse($loan->payment[0]->payment_date);
+
+        //$final = $past->format('Y-m-d h:i:s');
 
         $months_to_pay = $past->diffInMonths($dt);
         

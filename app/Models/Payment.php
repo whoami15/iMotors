@@ -21,7 +21,7 @@ class Payment extends Model
 
     public function application()
 	{
-        return $this->hasMany('App\Models\Applications', 'application_id', 'id')->orderBy('id', 'ASC');
+        return $this->belongsTo('App\Models\Applications', 'application_id', 'id')->orderBy('id', 'ASC');
     }
 
 }
