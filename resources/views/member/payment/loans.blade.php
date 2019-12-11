@@ -1,6 +1,6 @@
 @extends('layouts.backend.master')
 
-@section('title', 'Applications')
+@section('title', 'To Pay')
 
 @section('header_scripts')
 <link href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css">
@@ -16,12 +16,12 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Applications</h1>
+                <h1>To Pay</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
-                    <li class="breadcrumb-item active">Applications</li>
+                    <li class="breadcrumb-item active">To Pay</li>
                 </ol>
             </div>
         </div>
@@ -32,15 +32,9 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Applications</h3>
+                    <h3 class="card-title">To Pay</h3>
                 </div>
                 <div class="card-body">
-                    <div class="col-md-12 text-center p-2 mt-2">
-                        <button class="btn btn-warning btn-sm" ng-click="frm.sortby('PENDING')">Pending</button>
-                        <button class="btn btn-success btn-sm" ng-click="frm.sortby('APPROVED')">Approved</button>
-                        <button class="btn btn-danger btn-sm" ng-click="frm.sortby('DECLINED')">Declined</button>
-                        <button class="btn btn-primary btn-sm" ng-click="frm.sortby('RECENT')">All</button>
-                    </div>
                     <div class="table-responsive">
                         <div id="loading">
                             <h3 class="text-center"><i class="fa fa-spinner fa-spin"></i> Please wait...</h3>
@@ -49,10 +43,10 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Customer</th>
-                                <th>Contact no.</th>
                                 <th>Product</th>
+                                <th>Total</th>
                                 <th>Down Payment</th>
+                                <th>Months UNPAID</th>
                                 <th>Status</th>
                                 <th>Date</th>
                                 <th>Action</th>
@@ -87,13 +81,6 @@
 
             var vm = this;
 
-            vm.sort_by = 'RECENT';
-
-            vm.sortby = function (sort) {
-                if (sort) vm.sort_by = sort;
-                getdata();
-            }
-
             getdata();
             function getdata() {
 
@@ -107,7 +94,7 @@
                         processing: true,
                         serverSide: true,
                         ajax: {
-                            url: '/admin-applications-data',
+                            url: '/member-application-to-pay',
                             data: function (data) {
 
                                 for (var i = 0, len = data.columns.length; i < len; i++) {
@@ -118,9 +105,6 @@
                                 }
                                 delete data.search.regex;
 
-                                if(vm.sort_by != 'RECENT') {
-                                    data.sort_by = vm.sort_by;
-                                }
                             }
                         },
                         lengthChange: false,
@@ -136,10 +120,10 @@
                          ],
                         columns: [
                             {data: 'DT_RowIndex', name: 'id', orderable: true, searchable: false},
-                            {data: 'name', name: 'first_name', orderable: false, searchable: false},
-                            {data: 'mobile', name: 'mobile', orderable: false, searchable: false},
-                            {data: 'product', name: 'product.title', orderable: false, searchable: true},
+                            {data: 'title', name: 'product.title', orderable: false, searchable: true},
+                            {data: 'price', name: 'price', orderable: false, searchable: false},
                             {data: 'down_payment', name: 'down_payment', orderable: false, searchable: false},
+                            {data: 'months_unpaid', name: 'months_unpaid', orderable: false, searchable: false},
                             {data: 'status', name: 'status', orderable: false, searchable: false},
                             {data: 'date', name: 'date', orderable: true, searchable: false},
                             {data: 'action', name: 'action', orderable: true, searchable: false}

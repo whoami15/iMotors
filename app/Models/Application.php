@@ -25,6 +25,10 @@ class Application extends Model
         return $this->belongsTo('App\Models\Products', 'product_id', 'id');
     }
 
+    public function payment(){
+        return $this->belongsTo('App\Models\Payment', 'application_id', 'id');
+    }
+
 	//public function extra_fee(){
     //    return $this->hasMany('App\Models\BookingExtraFee', 'booking_id', 'id');
     //}

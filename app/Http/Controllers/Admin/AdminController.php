@@ -36,10 +36,16 @@ class AdminController extends Controller
 
         $user = Auth::user();
         $applications = Application::with('user')->where('status','PENDING')->orderBy('created_at','DESC')->take(5)->get();
+        $applications_count = Application::count();
+        $approved_applications_count = Application::where('status','APPROVED')->count();
+        $products_count = Products::where('is_active',1)->count();
         
         return view('admin.dashboard')
             ->with('user',$user)
-            ->with('applications',$applications);
+            ->with('applications',$applications)
+            ->with('applications_count',$applications_count)
+            ->with('approved_applications_count',$approved_applications_count)
+            ->with('products_count',$products_count);
     }
 
     public function getAdminDashboardData(Request $request) {
@@ -114,10 +120,10 @@ class AdminController extends Controller
                     return $applications->user->mobile;
                 })
                 ->editColumn('product', function ($applications) {
-                    return '';
+                    return $applications->product->title;
                 })
                 ->editColumn('down_payment', function ($applications) {
-                    return '';
+                    return '<strong>&#8369;'.number_format($applications->down_payment).'</strong>';
                 })
                 ->addColumn('action', function ($applications) {
                     return '<a class="btn btn-success btn-sm" href="/admin/application/view/'.$applications->id.'">View</a>';  
@@ -132,7 +138,7 @@ class AdminController extends Controller
                     }
                 })
                 ->addColumn('date', function ($applications) {
-                    return date('F j, Y g:i a', strtotime($applications->created_at));
+                    return date('F j, Y g:i a', strtotime($applications->created_at)) . ' | ' . $applications->created_at->diffForHumans();
                 })
                 ->addIndexColumn()
                 ->rawColumns(['name','mobile','product','down_payment','action','status','date'])
@@ -148,6 +154,41 @@ class AdminController extends Controller
             return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again!'),422);
         }
 
+    }
+
+    public function getAdminViewApplication($id) {
+
+        $application = Application::with('product','user')->where('id',$id)->first();
+
+        if(!$application) {
+
+            Session::flash('danger', 'Application not found.');
+            return Redirect::back();
+        }
+
+        $monthly_payment = ($application->product->price - $application->down_payment) / $application->payment_length;
+
+        return view('admin.applications.view')
+            ->with('application',$application)
+            ->with('monthly_payment',$monthly_payment);
+    }
+
+    public function postAdminUpdateApplication($id, Request $request) {
+
+        $application = Application::with('product','user')->where('id',$id)->first();
+
+        if(!$application) {
+
+            Session::flash('danger', 'Application not found.');
+            return Redirect::back();
+        }
+
+        $application->status = $request->status;
+        $application->reason = $request->reason;
+        $application->save();
+
+        Session::flash('success', 'Application has been updated.');
+        return Redirect::back();
     }
 
     // Products
@@ -325,6 +366,80 @@ class AdminController extends Controller
             }
 
             Session::flash('success', 'Product Successfully updated.');
+            return Redirect::back();
+
+        } catch(\Exception $e) {
+
+            Session::flash('danger', $e->getMessage());
+            return Redirect::back();
+        }
+    }
+
+    public function postAdminAddBrand(Request $request) {
+
+        try {
+
+            $brand = new Brand;
+            $brand->brand_name = $request->brand_name;
+            $brand->description = $request->description;
+            $brand->status = 1;
+
+            if($request->file('photo')) {
+
+                $photo = $request->file('photo');
+
+                $photoName = strtotime("now").'-'.str_replace(' ', '', $photo->getClientOriginalName());
+                $photo->move(public_path('brand/'), $photoName);
+                $brand->filename = URL::asset('/brand').'/'.$photoName;
+                
+            }
+
+            $brand->save();
+
+
+            Session::flash('success', 'Brand Successfully added.');
+            return Redirect::back();
+
+        } catch(\Exception $e) {
+
+            Session::flash('danger', $e->getMessage());
+            return Redirect::back();
+        }
+    }
+
+    public function postAdminAddMotorType(Request $request) {
+
+        try {
+
+            $motor_type = new MotorType;
+            $motor_type->type = $request->type;
+            $motor_type->description = $request->description;
+            $motor_type->status = 1;
+
+            $motor_type->save();
+
+            Session::flash('success', 'Motor Type Successfully added.');
+            return Redirect::back();
+
+        } catch(\Exception $e) {
+
+            Session::flash('danger', $e->getMessage());
+            return Redirect::back();
+        }
+    }
+
+    public function postAdminAddBranch(Request $request) {
+
+        try {
+
+            $branch = new Branch;
+            $branch->branch_name = $request->branch_name;
+            $branch->description = $request->description;
+            $branch->status = 1;
+
+            $branch->save();
+
+            Session::flash('success', 'Branch Successfully added.');
             return Redirect::back();
 
         } catch(\Exception $e) {

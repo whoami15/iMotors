@@ -17,6 +17,7 @@ use DB;
 use PDF;
 use URL;
 use DateTime;
+use Carbon\Carbon;
 
 class MemberController extends Controller
 {
@@ -29,10 +30,12 @@ class MemberController extends Controller
     public function getMemberDashboard() {
 
         $user = Auth::user();
-        $applications = $user->application()->orderBy('created_at','DESC')->take(5)->get();
+        $applications = Application::with('product')->orderBy('created_at','DESC')->take(5)->get();
+        $summary = getDashboardCounts($user->id);
         
         return view('member.dashboard')
             ->with('user',$user)
+            ->with('summary',$summary)
             ->with('applications',$applications);      
     }
 
@@ -86,6 +89,65 @@ class MemberController extends Controller
         }
     }
 
+    public function postMemberApplication(Request $request) {
+        
+        $user = Auth::user();
+
+        $product = Products::where('id',$request->product_id)->first();
+
+        if(!$product) {
+
+            Session::flash('danger', 'Product not found.');
+            return Redirect::back();
+        }
+
+        $application = new Application;
+        $application->user_id = $user->id;
+        $application->product_id = $product->id;
+        $application->purpose = $request->purpose;
+        $application->unit_user = $request->unit_user;
+        $application->down_payment = $request->down_payment;
+        $application->payment_length = $request->payment_length;
+        $application->present_address = $request->present_address;
+        $application->previous_address = $request->previous_address;
+        $application->provincial_address = $request->provincial_address;
+        $application->civil_status = $request->civil_status;
+        $application->mobile = $request->mobile;
+        $application->sex = $request->sex;
+        $application->tin = $request->tin;
+        $application->birth_place = $request->birth_place;
+        $application->birth_date = $request->birth_date;
+        $application->age = $request->age;
+        $application->educational_attainment = $request->educational_attainment;
+        $application->course = $request->course;
+        $application->school = $request->school;
+        $application->year_graduated = $request->year_graduated;
+        $application->status = 'PENDING';
+        $application->save();
+
+        Session::flash('success','Your application has been submitted. Click <a href="'. url('/application/view/' .$application->id) .'"><strong>HER</strong>E</a> to view.');
+        return Redirect::back();
+    }
+
+    public function getMemberViewApplication($id) {
+
+        $user = Auth::user();
+
+        $application = Application::with('product','user')->where('id',$id)->where('user_id',$user->id)->first();
+
+        if(!$application) {
+
+            Session::flash('danger', 'Application not found.');
+            return Redirect::back();
+        }
+
+        $monthly_payment = ($application->product->price - $application->down_payment) / $application->payment_length;
+
+        return view('member.application.view')
+            ->with('application',$application)
+            ->with('monthly_payment',$monthly_payment);
+    }
+
     public function getMemberApplications() {
 
         $user = Auth::user();
@@ -117,7 +179,7 @@ class MemberController extends Controller
                     return $applications->product->brand_type;
                 })
                 ->editColumn('down_payment', function ($applications) {
-                    return $applications->product->down_payment;
+                    return '&#8369;'. number_format($applications->down_payment);
                 })
                 ->addColumn('status', function ($applications) {
                     if($applications->status == 'PENDING') {
@@ -131,8 +193,11 @@ class MemberController extends Controller
                 ->addColumn('date', function ($applications) {
                     return date('F j, Y g:i a', strtotime($applications->created_at)) . ' | ' . $applications->created_at->diffForHumans();
                 })
+                ->addColumn('action', function ($applications) {
+                    return '<a class="btn btn-primary btn-sm" href="/application/view/'.$applications->id.'">View</a>';  
+                })
                 ->addIndexColumn()
-                ->rawColumns(['title','price','brand','brand_type','down_payment','status','date'])
+                ->rawColumns(['title','price','brand','brand_type','down_payment','status','date','action'])
                 ->make(true);
 
             }else{
@@ -145,6 +210,94 @@ class MemberController extends Controller
             return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again!'),422);
         }
                         
+    }
+
+    public function getMemberPayLoan($id) {
+
+        $user = Auth::user();
+
+        $loan = Application::with('product','user','payment')->where('user_id',$user->id)->where('status','APPROVED')->first();
+
+        if(!$loan) {
+
+            Session::flash('danger', 'Loan not found.');
+            return Redirect::back();
+        }
+
+        $dt = Carbon::now();
+
+        $past = $loan->payment->created_at;
+
+        $months_to_pay = $past->diffInMonths($dt);
+        
+        return view('member.payment.pay')
+            ->with('user',$user)
+            ->with('loan',$loan);
+    }
+
+    public function getMemberLoans() {
+
+        $user = Auth::user();
+        
+        return view('member.payment.loans')->with('user',$user);
+    }
+    
+    public function getMemberApplicationsToPayData(Request $request) {
+
+        if ($request->wantsJson()) {
+
+            $user = Auth::user();
+    
+            $applications = Application::with('product','payment','user')->where('user_id',$user->id)->where('status','APPROVED')->orderBy('created_at','DESC');
+
+            if($applications) {
+
+                return Datatables::of($applications)
+                ->editColumn('title', function ($applications) {
+                    return $applications->product->title;
+                })
+                ->editColumn('price', function ($applications) {
+                    return '<strong>&#8369;'. number_format($applications->product->price) .'</strong>'; 
+                })
+                ->editColumn('down_payment', function ($applications) {
+                    return '<strong>&#8369;'. number_format($applications->down_payment) .'</strong>';
+                })
+                ->editColumn('months_unpaid', function ($applications) {
+                    $dt = Carbon::now();
+                    if($applications->payment) {
+                        return $applications->payment->created_at->diffInMonths($dt). 'month(s)';
+                    } else {
+                        return 'NONE';
+                    }
+                })
+                ->addColumn('status', function ($applications) {
+                    if($applications->status == 'PENDING') {
+                        return '<span class="text-warning">PENDING</span>';
+                    } elseif($applications->status == 'APPROVED') {
+                        return '<span class="text-success">APPROVED</span>';
+                    } elseif($applications->status == 'DECLINED') {
+                        return '<span class="text-danger">DECLINED</span>';
+                    }
+                })
+                ->addColumn('date', function ($applications) {
+                    return date('F j, Y g:i a', strtotime($applications->created_at)) . ' | ' . $applications->created_at->diffForHumans();
+                })
+                ->addColumn('action', function ($applications) {
+                    return '<a class="btn btn-danger btn-block" href="/loan/pay/'.$applications->id.'"><strong>PAY <i class="fa fa-arrow-right"></i></strong></a>';  
+                })
+                ->addIndexColumn()
+                ->rawColumns(['title','price','down_payment','months_unpaid','status','date','action'])
+                ->make(true);
+
+            }else{
+
+                return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again.'),422);
+            }
+
+        } else{
+
+            return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again!'),422);
+        }
     }
 
 }
