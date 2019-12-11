@@ -9,6 +9,7 @@ use Yajra\Datatables\Datatables;
 use App\Models\User;
 use App\Models\Application;
 use App\Models\Products;
+use App\Models\Payment;
 use Session;
 use Redirect;
 use Cache;
@@ -123,7 +124,16 @@ class MemberController extends Controller
         $application->school = $request->school;
         $application->year_graduated = $request->year_graduated;
         $application->status = 'PENDING';
+        $application->last_payment_date = Carbon::now();
         $application->save();
+
+        // sa third step ito
+        $payment = new Payment;
+        $payment->user_id = $user->id;
+        $payment->application_id = $application->id;
+        $payment->amount = $request->down_payment;
+        $payment->payment_date = Carbon::now();
+        $payment->save();
 
         Session::flash('success','Your application has been submitted. Click <a href="'. url('/application/view/' .$application->id) .'"><strong>HER</strong>E</a> to view.');
         return Redirect::back();
@@ -224,19 +234,58 @@ class MemberController extends Controller
             return Redirect::back();
         }
 
+        $monthly_payment = getMonthlyPayment($user->id,$loan->id);
+
+        $balance = getTotalBalance($user->id,$loan->id);
+
         $dt = Carbon::now();
 //dd($loan->payment[0]->payment_date);
 
-        $past = Carbon::parse($loan->payment[0]->payment_date);
+        $past = Carbon::parse($loan->last_payment_date);
 
         $final = $past->format('Y-m-d');
 
         $months_to_pay = $past->diffInMonths($dt);
+
+        if($months_to_pay == 0) {
+
+            Session::flash('danger', 'Nothing to Pay.');
+            return Redirect::back();
+        }
         
         return view('member.payment.pay')
             ->with('user',$user)
             ->with('loan',$loan)
-            ->with('months_to_pay',$months_to_pay);
+            ->with('months_to_pay',$months_to_pay)
+            ->with('monthly_payment',$monthly_payment)
+            ->with('balance',$balance);
+    }
+
+    public function postMemberPayLoan($id, Request $request) {
+        
+        $user = Auth::user();
+
+        $loan = Application::with('product','user','payment')->where('user_id',$user->id)->where('status','APPROVED')->first();
+
+        if(!$loan) {
+
+            Session::flash('danger', 'Loan not found.');
+            return Redirect::back();
+        }
+        //dd(number_format((float) $request->amount, 2));
+        $amount = str_replace(",", "", $request->amount);
+        $payment = new Payment;
+        $payment->user_id = $user->id;
+        $payment->application_id = $loan->id;
+        $payment->amount = (float)$amount;
+        $payment->payment_date = Carbon::now();
+        $payment->save();
+
+        $loan->last_payment_date = Carbon::now();
+        $loan->save();
+
+        Session::flash('success','Payment Successful.');
+        return redirect('/payments');
     }
 
     public function getMemberLoans() {
@@ -269,9 +318,9 @@ class MemberController extends Controller
                 ->editColumn('months_unpaid', function ($applications) {
                     $dt = Carbon::now();
                     if($applications->payment) {
-                        $past = Carbon::parse($applications->payment[0]->payment_date);
+                        $past = Carbon::parse($applications->last_payment_date);
                         $final = $past->format('Y-m-d');
-                        return $past->diffInMonths($dt). 'month(s)';
+                        return $past->diffInMonths($dt). ' MONTH(s)';
                     } else {
                         return 'NONE';
                     }
@@ -289,7 +338,23 @@ class MemberController extends Controller
                     return date('F j, Y g:i a', strtotime($applications->created_at)) . ' | ' . $applications->created_at->diffForHumans();
                 })
                 ->addColumn('action', function ($applications) {
-                    return '<a class="btn btn-danger btn-block" href="/loan/pay/'.$applications->id.'"><strong>PAY <i class="fa fa-arrow-right"></i></strong></a>';  
+
+                    $dt = Carbon::now();
+
+                    if($applications->payment) {
+
+                        $past = Carbon::parse($applications->last_payment_date);
+                        $final = $past->format('Y-m-d');
+                        $count_unpaid = $past->diffInMonths($dt);
+
+                        if($count_unpaid > 0) {
+                            return '<a class="btn btn-danger btn-block" href="/loan/pay/'.$applications->id.'"><strong>PAY <i class="fa fa-arrow-right"></i></strong></a>';
+                        } else {
+                            return '<span class="text-bold">Nothing to Pay</label>';
+                        }
+                    } else {
+                        return 'NONE';
+                    }
                 })
                 ->addIndexColumn()
                 ->rawColumns(['title','price','down_payment','months_unpaid','status','date','action'])
@@ -304,6 +369,56 @@ class MemberController extends Controller
 
             return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again!'),422);
         }
+    }
+
+    public function getMemberPaymentsList() {
+
+        $user = Auth::user();
+        
+        return view('member.payment.list')->with('user',$user);
+    }
+
+    public function getMemberPaymentsListData(Request $request) {
+
+        if ($request->wantsJson()) {
+
+            $user = Auth::user();
+    
+            $payments = Payment::with('application','user')->where('user_id',$user->id)->orderBy('created_at','DESC');
+            
+            if($payments) {
+
+                return Datatables::of($payments)
+                ->editColumn('product', function ($payments) {
+                    return $payments->application->product->title;
+                })
+                ->editColumn('amount', function ($payments) {
+                    return '<strong>&#8369;'. number_format($payments->amount).'</strong>'; 
+                })
+                ->addColumn('payment_date', function ($payments) {
+                    return date('F j, Y g:i a', strtotime($payments->payment_date)) . ' | ' . $payments->payment_date->diffForHumans();
+                })
+                ->addColumn('date', function ($payments) {
+                    return date('F j, Y g:i a', strtotime($payments->created_at)) . ' | ' . $payments->created_at->diffForHumans();
+                })
+                ->addColumn('action', function ($payments) {
+                    //return '<a class="btn btn-primary btn-sm" href="/application/view/'.$payments->id.'">View</a>';
+                    return '';
+                })
+                ->addIndexColumn()
+                ->rawColumns(['product','amount','payment_date','date','action'])
+                ->make(true);
+
+            }else{
+
+                return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again.'),422);
+            }
+
+        } else{
+
+            return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again!'),422);
+        }
+                        
     }
 
 }

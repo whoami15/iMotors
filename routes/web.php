@@ -44,6 +44,9 @@ Route::group(['middleware' => 'revalidate'],function(){
 
     Route::get('/loans', array('as' => 'get-member-loans','uses' => 'Member\MemberController@getMemberLoans'));
     Route::get('/loan/pay/{id}', array('as' => 'get-member-pay-loan','uses' => 'Member\MemberController@getMemberPayLoan'));
+    Route::post('/loan/{id}/pay', array('as' => 'post-member-pay-loan','uses' => 'Member\MemberController@postMemberPayLoan'));
+    Route::get('/payments', array('as' => 'get-member-payments-history','uses' => 'Member\MemberController@getMemberPaymentsList'));
+    Route::get('/member-payments-history-data', array('as' => 'get-member-payments-history-data','uses' => 'Member\MemberController@getMemberPaymentsListData'));
 
     // # SUB ADMIN -- #
 

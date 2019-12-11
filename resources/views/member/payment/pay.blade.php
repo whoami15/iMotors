@@ -50,52 +50,55 @@
                     </div>
                     @endif
 
-                    <form method="POST" action="{{ url('application') }}" autocomplete="off" accept-charset="utf-8" enctype="multipart/form-data" id="addForm">
+                    @if($loan)
+                    <h3 class="text-center text-bold mb-2 mt-2">BALANCE: &#8369;{{ number_format($balance) }}</h3>
+                    <h3 class="text-center text-bold mb-5 mt-2"><u>No. of Month(s) to Pay: {{ $months_to_pay }} (&#8369;{{ number_format($monthly_payment * $months_to_pay) }})</u></h3>
+                    @endif
+                    
+                    <form method="POST" action="{{ url('/loan/'.$loan->id.'/pay') }}" autocomplete="off" accept-charset="utf-8" enctype="multipart/form-data" id="addForm">
                         {!! csrf_field() !!}
-                        <h3>
-                            @if($loan)
-                            Month(s) to Pay: {{ $months_to_pay }}
-                            @endif
-                        </h3>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="purpose">Purpose</label>
-                                    <select class="form-control" name="purpose" required>
-                                        <option value="" selected disabled>Choose</option>
-                                        <option value="SERVICE">SERVICE</option>
-                                        <option value="PASSENGER">PASSENGER</option>
-                                        <option value="DELIVERY">DELIVERY</option>
-                                    </select>
+
+                        <div class="col-md-6 offset-md-3">
+                            <div class="row">
+                                <div class="col-12 table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Product</th>
+                                                <th>Brand</th>
+                                                <th>Type</th>
+                                                <th>Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><a href="{{ url('/product/'.$loan->product->slug) }}" target="_blank" title="Click to open">{{ $loan->product->title }}</a></td>
+                                                <td>{{ $loan->product->product_brand }}</td>
+                                                <td>{{ $loan->product->brand_type }}</td>
+                                                <td>&#8369;{{ number_format($loan->product->price) }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="unit_user">Who will use</label>
-                                    <input type="text" class="form-control" name="unit_user" value="{{ old('unit_user') }}" placeholder="Who will use" required>
+                            <hr/>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="title">Your Down Payment (&#8369;)</label>
+                                        <input type="text" class="form-control" name="down_payment" value="{{ $loan->down_payment }}" placeholder="&#8369;" readonly disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="payment_length">Payment this Month</label>
+                                        <input type="text" class="form-control" name="amount" value="{{ number_format($monthly_payment * $months_to_pay) }}" placeholder="Monthly Payment multiply by month" required>
+                                    </div>
                                 </div>
                             </div>
+                            <hr/>
+                            <button type="submit" id="add_product_btn" class="btn btn-primary btn-block mt-30" type="submit">PAY NOW</button>
                         </div>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="title">Down Payment (&#8369;)</label>
-                                    <input type="text" class="form-control" name="down_payment" value="{{ old('down_payment') }}" placeholder="&#8369;" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="payment_length">Payment Length (in Months)</label>
-                                    <input type="text" class="form-control" name="payment_length" value="{{ old('payment_length') }}" placeholder="e.g.: 36" required>
-                                </div>
-                            </div>
-                        </div>
-                        <hr/>
-                        <div class="form-group">
-                            <label for="title">Photos</label>
-                            <input type="file" name="photos[]" accept=".png, .jpg, .jpeg" multiple/>
-                        </div>
-                        <button type="submit" id="add_product_btn" class="btn btn-primary btn-block mt-30" type="submit">APPLY NOW</button>
                     </form>
                 </div>
             </div>
