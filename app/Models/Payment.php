@@ -13,6 +13,10 @@ class Payment extends Model
      * @var string
      */
     protected $table = 'tbl_payments';
+
+    protected $dates = [
+        'payment_date'
+    ];
     
     
     public function user(){
@@ -21,7 +25,7 @@ class Payment extends Model
 
     public function application()
 	{
-        return $this->belongsTo('App\Models\Applications', 'application_id', 'id')->orderBy('id', 'ASC');
+        return $this->belongsTo('App\Models\Application', 'application_id', 'id')->orderBy('id', 'ASC');
     }
 
 }

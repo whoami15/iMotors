@@ -58,13 +58,13 @@
 						<li class="nav-item">
 							<a href="{{ url('/loans') }}" class="nav-link">
 								<i class="far fa-circle nav-icon"></i>
-								<p>Loans</p>
+								<p>Pay Loans Here</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{ url('/') }}" class="nav-link">
+							<a href="{{ url('/payments') }}" class="nav-link">
 								<i class="far fa-circle nav-icon"></i>
-								<p>Paid</p>
+								<p>Payment History</p>
 							</a>
 						</li>
 						<li class="nav-item">

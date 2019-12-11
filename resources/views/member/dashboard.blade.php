@@ -112,15 +112,36 @@
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>Date</th>
-                                        <th>Amount</th>
+                                        <th>Product</th>
+                                        <th>Last Payment Date</th>
+                                        <th>DUE</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @if($applications)
+                                    @foreach($applications as $loan)
                                     <tr>
-                                        <td>December 1, 2019</td>
-                                        <td><strong>10,000</strong></td>
+                                        <td>{{ $loan->product->title }}</td>
+                                        <td>{{ date('F j, Y g:i a', strtotime($loan->last_payment_date)) }}</td>
+                                        <td>
+                                            @php
+                                                $dt = \Carbon\Carbon::now();
+                                                $past = \Carbon\Carbon::parse($loan->last_payment_date);
+                                                $final = $past->format('Y-m-d');
+                                                $count_unpaid = $past->diffInMonths($dt);
+                                            @endphp
+                                            @if($loan->payment)
+                                                @if($count_unpaid > 0) 
+                                                    <a class="btn btn-danger btn-sm" href="{{ url('/loan/pay/'.$loan->id) }}"><strong>DUE | PAY<i class="fa fa-arrow-right"></i></strong></a>
+                                                @else
+                                                    <span class="text-bold">Nothing to Pay</label>
+                                                @endif
+                                            @else
+                                            @endif
+                                        </td>
                                     </tr>
+                                    @endforeach
+                                    @endif
                                 </tbody>
                             </table>
                         </div>

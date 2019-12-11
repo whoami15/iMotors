@@ -23,4 +23,22 @@ function getCategories() {
 	return $motor_types;
 }
 
+function getMonthlyPayment($user_id,$application_id) {
+	$application = \App\Models\Application::with('product','user')->where('id',$application_id)->where('user_id',$user_id)->first();
+	$payment = \App\Models\Payment::where('application_id',$application_id)->where('user_id',$user_id)->first();
+
+	$monthly_payment = ( $application->product->price - ( $application->down_payment ) ) / $application->payment_length;
+
+	return $monthly_payment;
+}
+
+function getTotalBalance($user_id,$application_id) {
+	$application = \App\Models\Application::with('product','user')->where('id',$application_id)->where('user_id',$user_id)->first();
+	$payment = \App\Models\Payment::where('application_id',$application_id)->where('user_id',$user_id)->first();
+
+	$balance = ( $application->product->price - ( $application->down_payment + $payment->amount ) );
+
+	return $balance;
+}
+
 ?>
