@@ -269,7 +269,7 @@ class MemberController extends Controller
                 ->editColumn('months_unpaid', function ($applications) {
                     $dt = Carbon::now();
                     if($applications->payment) {
-                        return $applications->payment->created_at->diffInMonths($dt). 'month(s)';
+                        return $applications->payment[0]->payment_date->diffInMonths($dt). 'month(s)';
                     } else {
                         return 'NONE';
                     }
