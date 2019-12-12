@@ -486,6 +486,10 @@ class AdminController extends Controller
                 ->editColumn('code', function ($payments) {
                     return $payments->application->code;
                 })
+                ->editColumn('payment_method', function ($payments) {
+                    return $payments->payment_method;
+                })
+                ->editColumn('details', '{!! nl2br($details) !!}')
                 ->editColumn('product', function ($payments) {
                     return $payments->application->product->title;
                 })
@@ -503,7 +507,7 @@ class AdminController extends Controller
                     return '';
                 })
                 ->addIndexColumn()
-                ->rawColumns(['customer','product','code','amount','payment_date','date','action'])
+                ->rawColumns(['customer','payment_method','details','product','code','amount','payment_date','date','action'])
                 ->make(true);
 
             }else{

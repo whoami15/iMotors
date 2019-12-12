@@ -45,6 +45,8 @@
                                 <th>#</th>
                                 <th>Customer</th>
                                 <th>Loan Code</th>
+                                <th>Payment Method</th>
+                                <th>Details</th>
                                 <th>Product</th>
                                 <th>Amount Paid</th>
                                 <th>Payment Date</th>
@@ -122,13 +124,15 @@
                             {data: 'DT_RowIndex', name: 'id', orderable: true, searchable: false},
                             {data: 'customer', name: 'user.last_name', orderable: false, searchable: true},
                             {data: 'code', name: 'application.code', orderable: false, searchable: true},
+                            {data: 'payment_method', name: 'payment_method', orderable: false, searchable: true},
+                            {data: 'details', name: 'details', orderable: false, searchable: false},
                             {data: 'product', name: 'application.title', orderable: false, searchable: false},
                             {data: 'amount', name: 'amount', orderable: false, searchable: false},
                             {data: 'payment_date', name: 'payment_date', orderable: false, searchable: false},
                             {data: 'date', name: 'date', orderable: true, searchable: false},
                             {data: 'action', name: 'action', orderable: true, searchable: false}
                         ],
-                        order: [[4, 'desc']],
+                        order: [[8, 'desc']],
                         "initComplete": function(settings, json) { 
                                $('#loading').delay( 300 ).hide(); 
                                $("#content-table").delay( 300 ).show(); 

@@ -35,6 +35,17 @@
                     <h3 class="card-title">Payment History</h3>
                 </div>
                 <div class="card-body">
+                    @if(session('success'))
+                    <div class="alert alert-success" role="alert">
+                    {!! session('success') !!}
+                    </div>
+                    @endif
+
+                    @if(session('danger'))
+                    <div class="alert alert-warning" role="alert">
+                    {!! session('danger') !!}
+                    </div>
+                    @endif
                     <div class="table-responsive">
                         <div id="loading">
                             <h3 class="text-center"><i class="fa fa-spinner fa-spin"></i> Please wait...</h3>
@@ -44,6 +55,8 @@
                             <tr>
                                 <th>#</th>
                                 <th>Loan Code</th>
+                                <th>Payment Method</th>
+                                <th>Details</th>
                                 <th>Product</th>
                                 <th>Amount Paid</th>
                                 <th>Payment Date</th>
@@ -120,13 +133,15 @@
                         columns: [
                             {data: 'DT_RowIndex', name: 'id', orderable: true, searchable: false},
                             {data: 'code', name: 'application.code', orderable: false, searchable: true},
+                            {data: 'payment_method', name: 'payment_method', orderable: false, searchable: true},
+                            {data: 'details', name: 'details', orderable: false, searchable: false},
                             {data: 'product', name: 'product.application.title', orderable: false, searchable: false},
                             {data: 'amount', name: 'amount', orderable: false, searchable: false},
                             {data: 'payment_date', name: 'payment_date', orderable: false, searchable: false},
                             {data: 'date', name: 'date', orderable: true, searchable: false},
                             {data: 'action', name: 'action', orderable: true, searchable: false}
                         ],
-                        order: [[4, 'desc']],
+                        order: [[6, 'desc']],
                         "initComplete": function(settings, json) { 
                                $('#loading').delay( 300 ).hide(); 
                                $("#content-table").delay( 300 ).show(); 
