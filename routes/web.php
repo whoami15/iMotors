@@ -75,4 +75,6 @@ Route::group(['middleware' => 'revalidate'],function(){
     Route::post('/admin/motor_type/add', array('as' => 'post-admin-add-motor_type','uses' => 'Admin\AdminController@postAdminAddMotorType'));
     Route::post('/admin/branch/add', array('as' => 'post-admin-add-branch','uses' => 'Admin\AdminController@postAdminAddBranch'));
 
+    Route::get('/admin/payments', array('as' => 'get-admin-payments-history','uses' => 'Admin\AdminController@getAdminPaymentsList'));
+    Route::get('/admin/member-payments-history-data', array('as' => 'get-admin-payments-history-data','uses' => 'Admin\AdminController@getAdminPaymentsListData'));
 });  

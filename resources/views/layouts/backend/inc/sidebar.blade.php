@@ -125,9 +125,9 @@
 					</a>
 					<ul class="nav nav-treeview">
 						<li class="nav-item">
-							<a href="{{ url('/') }}" class="nav-link active">
+							<a href="{{ url('/admin/payments') }}" class="nav-link active">
 								<i class="far fa-circle nav-icon"></i>
-								<p>Paid</p>
+								<p>Payment History</p>
 							</a>
 						</li>
 						<li class="nav-item">

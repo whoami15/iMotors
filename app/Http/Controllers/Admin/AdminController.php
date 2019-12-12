@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Yajra\Datatables\Datatables;
 use App\Models\User;
 use App\Models\Application;
+use App\Models\Payment;
 use App\Models\Branch;
 use App\Models\Brand;
 use App\Models\MotorType;
@@ -456,6 +457,59 @@ class AdminController extends Controller
             Session::flash('danger', $e->getMessage());
             return Redirect::back();
         }
+    }
+
+    public function getAdminPaymentsList() {
+
+        $user = Auth::user();
+        
+        return view('admin.payment.list')->with('user',$user);
+    }
+
+    public function getAdminPaymentsListData(Request $request) {
+
+        if ($request->wantsJson()) {
+
+            $user = Auth::user();
+    
+            $payments = Payment::with('application','user')->orderBy('created_at','DESC');
+            
+            if($payments) {
+
+                return Datatables::of($payments)
+                ->editColumn('customer', function ($payments) {
+                    return $payments->application->user->first_name .' '. $payments->application->user->last_name;
+                })
+                ->editColumn('product', function ($payments) {
+                    return $payments->application->product->title;
+                })
+                ->editColumn('amount', function ($payments) {
+                    return '<strong>&#8369;'. number_format($payments->amount).'</strong>'; 
+                })
+                ->addColumn('payment_date', function ($payments) {
+                    return date('F j, Y g:i a', strtotime($payments->payment_date)) . ' | ' . $payments->payment_date->diffForHumans();
+                })
+                ->addColumn('date', function ($payments) {
+                    return date('F j, Y g:i a', strtotime($payments->created_at)) . ' | ' . $payments->created_at->diffForHumans();
+                })
+                ->addColumn('action', function ($payments) {
+                    //return '<a class="btn btn-primary btn-sm" href="/application/view/'.$payments->id.'">View</a>';
+                    return '';
+                })
+                ->addIndexColumn()
+                ->rawColumns(['product','amount','payment_date','date','action'])
+                ->make(true);
+
+            }else{
+
+                return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again.'),422);
+            }
+
+        } else{
+
+            return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again!'),422);
+        }
+                        
     }
 
 }

@@ -43,6 +43,7 @@
                             <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Customer</th>
                                 <th>Product</th>
                                 <th>Amount Paid</th>
                                 <th>Payment Date</th>
@@ -92,7 +93,7 @@
                         processing: true,
                         serverSide: true,
                         ajax: {
-                            url: '/member-payments-history-data',
+                            url: '/admin/member-payments-history-data',
                             data: function (data) {
 
                                 for (var i = 0, len = data.columns.length; i < len; i++) {
@@ -118,7 +119,8 @@
                          ],
                         columns: [
                             {data: 'DT_RowIndex', name: 'id', orderable: true, searchable: false},
-                            {data: 'product', name: 'product.application.title', orderable: false, searchable: false},
+                            {data: 'customer', name: 'user.last_name', orderable: false, searchable: true},
+                            {data: 'product', name: 'application.title', orderable: false, searchable: false},
                             {data: 'amount', name: 'amount', orderable: false, searchable: false},
                             {data: 'payment_date', name: 'payment_date', orderable: false, searchable: false},
                             {data: 'date', name: 'date', orderable: true, searchable: false},
