@@ -128,8 +128,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if($applications)
-                                    @foreach($applications as $loan)
+                                    @if($loans)
+                                    @foreach($loans as $loan)
                                     <tr>
                                         <td>{{ $loan->product->title }}</td>
                                         <td>{{ date('F j, Y g:i a', strtotime($loan->last_payment_date)) }}</td>
@@ -142,9 +142,9 @@
                                             @endphp
                                             @if($loan->payment)
                                                 @if($count_unpaid > 0) 
-                                                    <a class="btn btn-danger btn-sm" href="{{ url('/loan/pay/'.$loan->id) }}"><strong>DUE | PAY<i class="fa fa-arrow-right"></i></strong></a>
+                                                    <a class="btn btn-danger btn-sm" href="{{ url('/loan/pay/'.$loan->id) }}" target="_blank"><strong>DUE | PAY<i class="fa fa-arrow-right"></i></strong></a>
                                                 @else
-                                                    <span class="text-bold">Nothing to Pay</label>
+                                                    <a class="btn btn-success btn-sm" href="{{ url('/loan/pay/'.$loan->id) }}" target="_blank"><strong>PAY<i class="fa fa-arrow-right"></i></strong></a>
                                                 @endif
                                             @else
                                             @endif

@@ -526,6 +526,7 @@ class AdminController extends Controller
     }
 
     public function postAdminPayLoan(Request $request) {
+        
         $loan = Application::with('product','user','payment')->where('code',$request->loan_code)->where('status','APPROVED')->first();
 
         if(!$loan) {
@@ -556,6 +557,55 @@ class AdminController extends Controller
 
         Session::flash('success','Payment Successful.');
         return redirect('/admin/loan/pay');
+    }
+
+    public function getAdminDueList() {
+
+        $user = Auth::user();
+        
+        return view('admin.payment.due')->with('user',$user);
+    }
+
+    public function getAdminDueListData(Request $request) {
+
+        if ($request->wantsJson()) {
+
+            $user = Auth::user();
+    
+            $loans = Application::with('product','user','payment')->where('last_payment_date', '<=', Carbon::now()->subMonth())->where('status','APPROVED')->orderBy('created_at','DESC');
+
+            if($loans) {
+
+                return Datatables::of($loans)
+                ->editColumn('customer', function ($loans) {
+                    return $loans->user->first_name .' '. $loans->user->last_name;
+                })
+                ->editColumn('code', function ($loans) {
+                    return $loans->code;
+                })
+                ->editColumn('product', function ($loans) {
+                    return $loans->product->title;
+                })
+                ->editColumn('mobile', function ($loans) {
+                    return '<strong>'. $loans->user->mobile. '</strong>'; 
+                })
+                ->addColumn('last_payment_date', function ($loans) {
+                    return date('F j, Y g:i a', strtotime($loans->last_payment_date)). ' | ' . $loans->last_payment_date->diffForHumans();
+                })
+                ->addIndexColumn()
+                ->rawColumns(['customer','code','product','mobile','last_payment_date'])
+                ->make(true);
+
+            }else{
+
+                return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again.'),422);
+            }
+
+        } else{
+
+            return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again!'),422);
+        }
+                        
     }
 
 }

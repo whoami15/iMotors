@@ -32,6 +32,7 @@ class MemberController extends Controller
 
         $user = Auth::user();
         $applications = Application::with('product')->where('user_id',$user->id)->orderBy('created_at','DESC')->take(5)->get();
+        $loans = Application::with('product')->where('user_id',$user->id)->where('status','APPROVED')->orderBy('created_at','DESC')->take(5)->get();
         $summary = getDashboardCounts($user->id);
         $due = getTotalDue($user->id);
         
@@ -39,7 +40,8 @@ class MemberController extends Controller
             ->with('user',$user)
             ->with('summary',$summary)
             ->with('due',$due)
-            ->with('applications',$applications);      
+            ->with('applications',$applications)
+            ->with('loans',$loans);      
     }
 
     public function getMemberDashboardData(Request $request) {
@@ -270,11 +272,11 @@ class MemberController extends Controller
 
         $months_to_pay = $past->diffInMonths($dt);
 
-        if($months_to_pay == 0) {
+        //if($months_to_pay == 0) {
 
-            Session::flash('danger', 'Nothing to Pay.');
-            return Redirect::back();
-        }
+        //    Session::flash('danger', 'Nothing to Pay.');
+        //    return Redirect::back();
+        //}
         
         return view('member.payment.pay')
             ->with('user',$user)
@@ -374,9 +376,9 @@ class MemberController extends Controller
                         $count_unpaid = $past->diffInMonths($dt);
 
                         if($count_unpaid > 0) {
-                            return '<a class="btn btn-danger btn-block" href="/loan/pay/'.$applications->id.'"><strong>PAY <i class="fa fa-arrow-right"></i></strong></a>';
+                            return '<a class="btn btn-danger btn-block" href="/loan/pay/'.$applications->id.'"><strong>DUE | PAY <i class="fa fa-arrow-right"></i></strong></a>';
                         } else {
-                            return '<span class="text-bold">Nothing to Pay</label>';
+                            return '<a class="btn btn-success btn-block" href="/loan/pay/'.$applications->id.'"><strong>PAY <i class="fa fa-arrow-right"></i></strong></a>';
                         }
                     } else {
                         return 'NONE';
