@@ -15,7 +15,10 @@ class Application extends Model
     //{
     //	return (int)$this->extra_fee()->sum('amount');
     //}
-      
+    
+    protected $dates = [
+        'last_payment_date'
+    ];
 	
 	public function user(){
 		return $this->belongsTo('App\Models\User', 'user_id', 'id');
