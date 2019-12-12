@@ -82,6 +82,7 @@
                                         <th>Product</th>
                                         <th>Brand</th>
                                         <th>Down Payment</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -92,6 +93,15 @@
                                         <td>{{ $application->product->title }}</td>
                                         <td>{{ $application->product->product_brand }}</td>
                                         <td>&#8369;{{ number_format($application->down_payment) }}</td>
+                                        <td>
+                                            @if($application->status == 'PENDING')
+                                                <span class="text-warning">PENDING</span>
+                                            @elseif($application->status == 'APPROVED')
+                                                <span class="text-success">APPROVED</span>
+                                            @elseif($application->status == 'DECLINED')
+                                                <span class="text-danger">DECLINED</span>
+                                            @endif
+                                        </td>
                                         <td><a href="{{ url('/application/view/'.$application->id) }}">View</a></td>
                                     </tr>
                                     @endforeach

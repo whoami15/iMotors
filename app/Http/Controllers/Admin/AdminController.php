@@ -512,4 +512,38 @@ class AdminController extends Controller
                         
     }
 
+    public function getAdminPayLoan() {
+
+        $user = Auth::user();
+        
+        return view('admin.payment.pay')->with('user',$user);
+    }
+
+    public function postAdminPayLoan(Request $request) {
+        
+        $user = Auth::user();
+
+        $loan = Application::with('product','user','payment')->where('user_id',$user->id)->where('status','APPROVED')->first();
+
+        if(!$loan) {
+
+            Session::flash('danger', 'Loan not found.');
+            return Redirect::back();
+        }
+        //dd(number_format((float) $request->amount, 2));
+        $amount = str_replace(",", "", $request->amount);
+        $payment = new Payment;
+        $payment->user_id = $user->id;
+        $payment->application_id = $loan->id;
+        $payment->amount = (float)$amount;
+        $payment->payment_date = Carbon::now();
+        $payment->save();
+
+        $loan->last_payment_date = Carbon::now();
+        $loan->save();
+
+        Session::flash('success','Payment Successful.');
+        return redirect('/payments');
+    }
+
 }

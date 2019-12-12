@@ -43,6 +43,7 @@
                             <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Code</th>
                                 <th>Product</th>
                                 <th>Price</th>
                                 <th>Down Payment</th>
@@ -121,6 +122,7 @@
                          ],
                         columns: [
                             {data: 'DT_RowIndex', name: 'id', orderable: true, searchable: false},
+                            {data: 'code', name: 'code', orderable: false, searchable: true},
                             {data: 'title', name: 'product.title', orderable: false, searchable: true},
                             {data: 'price', name: 'price', orderable: false, searchable: false},
                             {data: 'down_payment', name: 'down_payment', orderable: false, searchable: false},

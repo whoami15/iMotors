@@ -77,4 +77,8 @@ Route::group(['middleware' => 'revalidate'],function(){
 
     Route::get('/admin/payments', array('as' => 'get-admin-payments-history','uses' => 'Admin\AdminController@getAdminPaymentsList'));
     Route::get('/admin/member-payments-history-data', array('as' => 'get-admin-payments-history-data','uses' => 'Admin\AdminController@getAdminPaymentsListData'));
+
+    
+    Route::get('/admin/loan/pay', array('as' => 'get-admin-pay-loan','uses' => 'Admin\AdminController@getAdminPayLoan'));
+    Route::post('/admin/loan/pay', array('as' => 'post-admin-pay-loan','uses' => 'Admin\AdminController@postAdminPayLoan'));
 });  
