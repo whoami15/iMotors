@@ -92,15 +92,15 @@
                     <!-- info row -->
                     @if($application->status == "PENDING")
                     <div class="alert alert-warning mt-2" role="alert">
-                        Your Application is <strong>{{ strtoupper($application->status) }}</strong>.
+                        Application is <strong>{{ strtoupper($application->status) }}</strong>.
                     </div>
                     @elseif($application->status == "APPROVED")
                     <div class="alert alert-success mt-2" role="alert">
-                        Your Application is <strong>{{ strtoupper($application->status) }}</strong>.
+                        Application is <strong>{{ strtoupper($application->status) }}</strong>.
                     </div>
                     @elseif($application->status == "DECLINED")
                     <div class="alert alert-danger mt-2" role="alert">
-                        Your Application is <strong>{{ strtoupper($application->status) }}</strong>.
+                        Application is <strong>{{ strtoupper($application->status) }}</strong>.
                     </div>
                     @endif
 

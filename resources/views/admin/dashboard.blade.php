@@ -97,9 +97,7 @@
                                         <td><strong>50,000</strong></td>
                                         <td>{{ date('F j, Y g:i a', strtotime($application->created_at)) . ' | ' . $application->created_at->diffForHumans()}}</td>
                                         <td>
-                                            <a href="{{ url('/') }}" class="btn btn-primary btn-sm">view</a>
-                                            <a href="{{ url('/') }}" class="btn btn-success btn-sm">approve</a>
-                                            <a href="{{ url('/') }}" class="btn btn-danger btn-sm">decline</a>
+                                            <a href="{{ url('/admin/application/view/'.$application->id) }}" class="btn btn-primary btn-sm">view</a>
                                         </td>
                                     </tr>
                                     @endforeach
