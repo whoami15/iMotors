@@ -312,6 +312,7 @@ class MemberController extends Controller
             $payment->payment_method = "REMITTANCE";
             $payment->details = 'REFERENCE NO.: '.$request->reference_number. '<br>NAME: '.$request->sender_name.'<br>MOBILE: '.$request->sender_mobile;
             
+            $payment->status = 'PENDING';
             $payment->save();
 
         } elseif($request->payment_method == "PAYPAL") {
@@ -326,6 +327,7 @@ class MemberController extends Controller
             $payment->amount = $amount;
             $payment->payment_date = Carbon::now();
             $payment->payment_method = "PAYPAL";
+            $payment->status = 'PENDING';
             $payment->save();
 
             $paypal = new PayPal;
@@ -352,7 +354,7 @@ class MemberController extends Controller
         $loan->last_payment_date = Carbon::now();
         $loan->save();
 
-        Session::flash('success','Payment Successful.');
+        Session::flash('success','Payment has been Successfully Submitted for Review to Our Administrator.');
         return redirect('/payments');
     }
 
@@ -382,7 +384,7 @@ class MemberController extends Controller
             $latest_payment->payment_method = "PAYPAL";
             $latest_payment->save();
 
-            Session::flash('success', 'You recent payment was sucessful with Reference Code: ' . $response->getTransactionReference());
+            Session::flash('success', 'Payment has been Successfully Submitted for Review to Our Administrator. Reference Code: ' . $response->getTransactionReference());
             return redirect('/loan/pay/'.$id);
         }
 
@@ -508,7 +510,7 @@ class MemberController extends Controller
 
             $user = Auth::user();
     
-            $payments = Payment::with('application','user')->where('user_id',$user->id)->orderBy('created_at','DESC');
+            $payments = Payment::with('application','user')->where('user_id',$user->id)->where('status','APPROVED')->orderBy('created_at','DESC');
             
             if($payments) {
 
@@ -519,7 +521,16 @@ class MemberController extends Controller
                 ->editColumn('payment_method', function ($payments) {
                     return $payments->payment_method;
                 })
-                ->editColumn('details', '{!! nl2br($details) !!}')
+                ->editColumn('details', function ($payments) {
+                    if($payments->payment_method == "REMITTANCE") {
+
+                        return nl2br($payments->details);
+                    } elseif($payments->payment_method == "PAYPAL") {
+
+                        return 'Transaction Code: '.$payments->transaction_id;
+                    }
+                })
+                //->editColumn('details', '{!! nl2br($details) !!}')
                 ->editColumn('product', function ($payments) {
                     return $payments->application->product->title;
                 })
@@ -532,12 +543,17 @@ class MemberController extends Controller
                 ->addColumn('date', function ($payments) {
                     return date('F j, Y g:i a', strtotime($payments->created_at)) . ' | ' . $payments->created_at->diffForHumans();
                 })
-                ->addColumn('action', function ($payments) {
-                    //return '<a class="btn btn-primary btn-sm" href="/application/view/'.$payments->id.'">View</a>';
-                    return '';
+                ->addColumn('status', function ($payments) {
+                    if($payments->status == 'PENDING') {
+                        return '<span class="text-warning">PENDING</span>';
+                    } elseif($payments->status == 'APPROVED') {
+                        return '<span class="text-success">APPROVED</span>';
+                    } elseif($payments->status == 'DECLINED') {
+                        return '<span class="text-danger">DECLINED</span>';
+                    }
                 })
                 ->addIndexColumn()
-                ->rawColumns(['code','payment_method','details','product','amount','payment_date','date','action'])
+                ->rawColumns(['code','payment_method','details','product','amount','payment_date','date','status'])
                 ->make(true);
 
             }else{

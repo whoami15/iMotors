@@ -137,9 +137,9 @@
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="{{ url('/admin/loan/due') }}" class="nav-link">
+							<a href="{{ url('/admin/payments/pending') }}" class="nav-link">
 								<i class="far fa-circle nav-icon"></i>
-								<p>Due</p>
+								<p>Pending Payments</p>
 							</a>
 						</li>
 					</ul>
