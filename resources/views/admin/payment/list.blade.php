@@ -44,6 +44,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Customer</th>
+                                <th>Loan Code</th>
                                 <th>Product</th>
                                 <th>Amount Paid</th>
                                 <th>Payment Date</th>
@@ -120,6 +121,7 @@
                         columns: [
                             {data: 'DT_RowIndex', name: 'id', orderable: true, searchable: false},
                             {data: 'customer', name: 'user.last_name', orderable: false, searchable: true},
+                            {data: 'code', name: 'application.code', orderable: false, searchable: true},
                             {data: 'product', name: 'application.title', orderable: false, searchable: false},
                             {data: 'amount', name: 'amount', orderable: false, searchable: false},
                             {data: 'payment_date', name: 'payment_date', orderable: false, searchable: false},

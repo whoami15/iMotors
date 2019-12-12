@@ -24,6 +24,7 @@ use DB;
 use PDF;
 use URL;
 use DateTime;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
@@ -480,6 +481,9 @@ class AdminController extends Controller
                 ->editColumn('customer', function ($payments) {
                     return $payments->application->user->first_name .' '. $payments->application->user->last_name;
                 })
+                ->editColumn('code', function ($payments) {
+                    return $payments->application->code;
+                })
                 ->editColumn('product', function ($payments) {
                     return $payments->application->product->title;
                 })
@@ -497,7 +501,7 @@ class AdminController extends Controller
                     return '';
                 })
                 ->addIndexColumn()
-                ->rawColumns(['product','amount','payment_date','date','action'])
+                ->rawColumns(['customer','product','code','amount','payment_date','date','action'])
                 ->make(true);
 
             }else{
@@ -520,16 +524,22 @@ class AdminController extends Controller
     }
 
     public function postAdminPayLoan(Request $request) {
-        
-        $user = Auth::user();
-
-        $loan = Application::with('product','user','payment')->where('user_id',$user->id)->where('status','APPROVED')->first();
+        $loan = Application::with('product','user','payment')->where('code',$request->loan_code)->where('status','APPROVED')->first();
 
         if(!$loan) {
 
-            Session::flash('danger', 'Loan not found.');
+            Session::flash('danger', 'Loan not found or Pending.');
             return Redirect::back();
         }
+
+        $user = User::where('username',$request->username)->orWhere('email',$request->username)->first();
+
+        if(!$user) {
+
+            Session::flash('danger', 'User not found.');
+            return Redirect::back();
+        }
+
         //dd(number_format((float) $request->amount, 2));
         $amount = str_replace(",", "", $request->amount);
         $payment = new Payment;
@@ -543,7 +553,7 @@ class AdminController extends Controller
         $loan->save();
 
         Session::flash('success','Payment Successful.');
-        return redirect('/payments');
+        return redirect('/admin/loan/pay');
     }
 
 }

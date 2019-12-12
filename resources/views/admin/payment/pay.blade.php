@@ -55,12 +55,12 @@
 
                         <div class="col-md-6 offset-md-3">
                             <div class="form-group">
-                                <label for="payment_length">Username or Email</label>
-                                <input type="text" class="form-control" name="username" value="{{ old('username') }}" placeholder="Username or Email" required>
-                            </div>
-                            <div class="form-group">
                                 <label for="title">Loan Code</label>
                                 <input type="text" class="form-control" name="loan_code" value="{{ old('loan_code') }}" placeholder="Loan Code" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="payment_length">Username or Email</label>
+                                <input type="text" class="form-control" name="username" value="{{ old('username') }}" placeholder="Username or Email" required>
                             </div>
                             <div class="form-group">
                                 <label for="title">Amount to Pay (&#8369;)</label>

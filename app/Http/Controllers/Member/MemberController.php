@@ -415,6 +415,9 @@ class MemberController extends Controller
             if($payments) {
 
                 return Datatables::of($payments)
+                ->editColumn('code', function ($payments) {
+                    return $payments->application->code;
+                })
                 ->editColumn('product', function ($payments) {
                     return $payments->application->product->title;
                 })
@@ -432,7 +435,7 @@ class MemberController extends Controller
                     return '';
                 })
                 ->addIndexColumn()
-                ->rawColumns(['product','amount','payment_date','date','action'])
+                ->rawColumns(['code','product','amount','payment_date','date','action'])
                 ->make(true);
 
             }else{
