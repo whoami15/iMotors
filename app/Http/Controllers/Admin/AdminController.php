@@ -187,6 +187,12 @@ class AdminController extends Controller
         $application->reason = $request->reason;
         $application->save();
 
+        if($request->status == "APPROVED") {
+            $product = Products::find($application->product_id);
+            $product->decrement('stock');
+            $product->save();
+        }
+
         Session::flash('success', 'Application has been updated.');
         return Redirect::back();
     }
@@ -274,6 +280,9 @@ class AdminController extends Controller
                 ->editColumn('price', function ($products) {
                     return '&#8369;'. number_format($products->price) .'<br/>(Down Payment: &#8369;'.number_format($products->down_payment).')'; 
                 })
+                ->editColumn('stock', function ($products) {
+                    return $products->stock;
+                })
                 ->addColumn('brand', function ($products) {
                     return $products->product_brand;
                 })
@@ -290,7 +299,7 @@ class AdminController extends Controller
                     return date('F j, Y g:i a', strtotime($products->created_at)) . ' | ' . $products->created_at->diffForHumans();
                 })
                 ->addIndexColumn()
-                ->rawColumns(['title','price','brand','brand_type','branch','action','date'])
+                ->rawColumns(['title','price','brand','brand_type','stock','branch','action','date'])
                 ->make(true);
 
             }else{
