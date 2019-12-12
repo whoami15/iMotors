@@ -35,7 +35,7 @@ function getCategories() {
 }
 
 function getMonthlyPayment($user_id,$application_id) {
-	$application = \App\Models\Application::with('product','user')->where('id',$application_id)->where('user_id',$user_id)->where('status','APPROVED')->first();
+	$application = \App\Models\Application::with('product','user')->where('id',$application_id)->where('user_id',$user_id)->whereIn('status',['APPROVED','PENDING'])->first();
 	$payment = \App\Models\Payment::where('application_id',$application_id)->where('user_id',$user_id)->first();
 
 	$monthly_payment = ( $application->product->price - ( $application->down_payment ) ) / $application->payment_length;
