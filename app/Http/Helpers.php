@@ -68,9 +68,51 @@ function getTotalDue($user_id) {
 	
 		$final = $past->format('Y-m-d');
 	
-		$months_to_pay += $past->diffInMonths($dt);
+		//$months_to_pay = $past->diffInMonths($dt);
 
-		$monthly_payment += ( $loan->product->price - ( $loan->down_payment ) ) / $loan->payment_length;
+		if($past->diffInMonths($dt) > 0) {
+			$months_to_pay++;
+		}
+
+		$monthly_payment = ( $loan->product->price - ( $loan->down_payment ) ) / $loan->payment_length;
+
+	}
+	
+	$total = 0;
+
+    if($months_to_pay > 0)  {
+		$total = $monthly_payment * $months_to_pay;
+	}
+
+	return array(
+		"months_to_pay" => $months_to_pay,
+		"total_due" => $total
+	);
+}
+
+function getAdminDashboardCounts() {
+	
+	$dt = \Carbon\Carbon::now();
+
+	$loans = \App\Models\Application::with('product','user')->where('status','APPROVED')->get();
+
+	$months_to_pay = 0;
+
+	$monthly_payment = 0;
+
+	foreach($loans as $loan) {
+
+		$past = \Carbon\Carbon::parse($loan->last_payment_date);
+	
+		$final = $past->format('Y-m-d');
+	
+		//$months_to_pay = $past->diffInMonths($dt);
+
+		if($past->diffInMonths($dt) > 0) {
+			$months_to_pay++;
+		}
+
+		$monthly_payment = ( $loan->product->price - ( $loan->down_payment ) ) / $loan->payment_length;
 
 	}
 	

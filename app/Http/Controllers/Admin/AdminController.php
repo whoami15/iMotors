@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Yajra\Datatables\Datatables;
 use App\Models\User;
 use App\Models\Application;
+use App\Models\Payment;
 use App\Models\Branch;
 use App\Models\Brand;
 use App\Models\MotorType;
@@ -23,6 +24,7 @@ use DB;
 use PDF;
 use URL;
 use DateTime;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
@@ -39,9 +41,11 @@ class AdminController extends Controller
         $applications_count = Application::count();
         $approved_applications_count = Application::where('status','APPROVED')->count();
         $products_count = Products::where('is_active',1)->count();
+        $summary = getAdminDashboardCounts();
         
         return view('admin.dashboard')
             ->with('user',$user)
+            ->with('summary',$summary)
             ->with('applications',$applications)
             ->with('applications_count',$applications_count)
             ->with('approved_applications_count',$approved_applications_count)
@@ -456,6 +460,102 @@ class AdminController extends Controller
             Session::flash('danger', $e->getMessage());
             return Redirect::back();
         }
+    }
+
+    public function getAdminPaymentsList() {
+
+        $user = Auth::user();
+        
+        return view('admin.payment.list')->with('user',$user);
+    }
+
+    public function getAdminPaymentsListData(Request $request) {
+
+        if ($request->wantsJson()) {
+
+            $user = Auth::user();
+    
+            $payments = Payment::with('application','user')->orderBy('created_at','DESC');
+            
+            if($payments) {
+
+                return Datatables::of($payments)
+                ->editColumn('customer', function ($payments) {
+                    return $payments->application->user->first_name .' '. $payments->application->user->last_name;
+                })
+                ->editColumn('code', function ($payments) {
+                    return $payments->application->code;
+                })
+                ->editColumn('product', function ($payments) {
+                    return $payments->application->product->title;
+                })
+                ->editColumn('amount', function ($payments) {
+                    return '<strong>&#8369;'. number_format($payments->amount).'</strong>'; 
+                })
+                ->addColumn('payment_date', function ($payments) {
+                    return date('F j, Y g:i a', strtotime($payments->payment_date)) . ' | ' . $payments->payment_date->diffForHumans();
+                })
+                ->addColumn('date', function ($payments) {
+                    return date('F j, Y g:i a', strtotime($payments->created_at)) . ' | ' . $payments->created_at->diffForHumans();
+                })
+                ->addColumn('action', function ($payments) {
+                    //return '<a class="btn btn-primary btn-sm" href="/application/view/'.$payments->id.'">View</a>';
+                    return '';
+                })
+                ->addIndexColumn()
+                ->rawColumns(['customer','product','code','amount','payment_date','date','action'])
+                ->make(true);
+
+            }else{
+
+                return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again.'),422);
+            }
+
+        } else{
+
+            return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again!'),422);
+        }
+                        
+    }
+
+    public function getAdminPayLoan() {
+
+        $user = Auth::user();
+        
+        return view('admin.payment.pay')->with('user',$user);
+    }
+
+    public function postAdminPayLoan(Request $request) {
+        $loan = Application::with('product','user','payment')->where('code',$request->loan_code)->where('status','APPROVED')->first();
+
+        if(!$loan) {
+
+            Session::flash('danger', 'Loan not found or Pending.');
+            return Redirect::back();
+        }
+
+        $user = User::where('username',$request->username)->orWhere('email',$request->username)->first();
+
+        if(!$user) {
+
+            Session::flash('danger', 'User not found.');
+            return Redirect::back();
+        }
+
+        //dd(number_format((float) $request->amount, 2));
+        $amount = str_replace(",", "", $request->amount);
+        $payment = new Payment;
+        $payment->user_id = $user->id;
+        $payment->application_id = $loan->id;
+        $payment->amount = (float)$amount;
+        $payment->payment_date = Carbon::now();
+        $payment->save();
+
+        $loan->last_payment_date = Carbon::now();
+        $loan->save();
+
+        Session::flash('success','Payment Successful.');
+        return redirect('/admin/loan/pay');
     }
 
 }

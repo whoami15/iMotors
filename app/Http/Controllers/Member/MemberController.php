@@ -104,6 +104,15 @@ class MemberController extends Controller
             return Redirect::back();
         }
 
+        // code
+        $alphabet = '1qw2e?rtyu(io3pasd4f*ghj5]klzx6c)vbnmP7?OIUYT8R@EWQLK9JHGFD#SAMN[BVCXZ0';
+        $pass = array(); //remember to declare $pass as an array
+        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+        for ($i = 0; $i < 10; $i++) {
+            $n = rand(0, $alphaLength);
+            $pass[] = $alphabet[$n];
+        }
+
         $application = new Application;
         $application->user_id = $user->id;
         $application->product_id = $product->id;
@@ -127,6 +136,14 @@ class MemberController extends Controller
         $application->year_graduated = $request->year_graduated;
         $application->status = 'PENDING';
         $application->last_payment_date = Carbon::now();
+
+        $code = Application::where('code', implode($pass))->first();
+        if(!$code){
+            $application->code = implode($pass);
+            $code = substr(md5(uniqid(mt_rand(), true)) , 0, 10);
+            $code = strToUpper($code);
+        }
+
         $application->save();
 
         // sa third step ito
@@ -179,6 +196,9 @@ class MemberController extends Controller
             if($applications) {
 
                 return Datatables::of($applications)
+                ->editColumn('code', function ($applications) {
+                    return $applications->code;
+                })
                 ->editColumn('title', function ($applications) {
                     return $applications->product->title;
                 })
@@ -210,7 +230,7 @@ class MemberController extends Controller
                     return '<a class="btn btn-primary btn-sm" href="/application/view/'.$applications->id.'">View</a>';  
                 })
                 ->addIndexColumn()
-                ->rawColumns(['title','price','brand','brand_type','down_payment','status','date','action'])
+                ->rawColumns(['code','title','price','brand','brand_type','down_payment','status','date','action'])
                 ->make(true);
 
             }else{
@@ -309,6 +329,9 @@ class MemberController extends Controller
             if($applications) {
 
                 return Datatables::of($applications)
+                ->editColumn('loan', function ($applications) {
+                    return $applications->loan;
+                })
                 ->editColumn('title', function ($applications) {
                     return $applications->product->title;
                 })
@@ -360,7 +383,7 @@ class MemberController extends Controller
                     }
                 })
                 ->addIndexColumn()
-                ->rawColumns(['title','price','down_payment','months_unpaid','status','date','action'])
+                ->rawColumns(['loan','title','price','down_payment','months_unpaid','status','date','action'])
                 ->make(true);
 
             }else{
@@ -392,6 +415,9 @@ class MemberController extends Controller
             if($payments) {
 
                 return Datatables::of($payments)
+                ->editColumn('code', function ($payments) {
+                    return $payments->application->code;
+                })
                 ->editColumn('product', function ($payments) {
                     return $payments->application->product->title;
                 })
@@ -409,7 +435,7 @@ class MemberController extends Controller
                     return '';
                 })
                 ->addIndexColumn()
-                ->rawColumns(['product','amount','payment_date','date','action'])
+                ->rawColumns(['code','product','amount','payment_date','date','action'])
                 ->make(true);
 
             }else{

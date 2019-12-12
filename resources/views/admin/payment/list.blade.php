@@ -1,6 +1,6 @@
 @extends('layouts.backend.master')
 
-@section('title', 'Applications')
+@section('title', 'Payment History')
 
 @section('header_scripts')
 <link href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css">
@@ -16,12 +16,12 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Applications</h1>
+                <h1>Payment History</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
-                    <li class="breadcrumb-item active">Applications</li>
+                    <li class="breadcrumb-item active">Payment History</li>
                 </ol>
             </div>
         </div>
@@ -32,7 +32,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Applications</h3>
+                    <h3 class="card-title">Payment History</h3>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -43,13 +43,11 @@
                             <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Code</th>
+                                <th>Customer</th>
+                                <th>Loan Code</th>
                                 <th>Product</th>
-                                <th>Price</th>
-                                <th>Down Payment</th>
-                                <th>Brand</th>
-                                <th>Type</th>
-                                <th>Status</th>
+                                <th>Amount Paid</th>
+                                <th>Payment Date</th>
                                 <th>Date</th>
                                 <th>Action</th>
                             </tr>
@@ -96,7 +94,7 @@
                         processing: true,
                         serverSide: true,
                         ajax: {
-                            url: '/member-application-history-data',
+                            url: '/admin/member-payments-history-data',
                             data: function (data) {
 
                                 for (var i = 0, len = data.columns.length; i < len; i++) {
@@ -122,17 +120,15 @@
                          ],
                         columns: [
                             {data: 'DT_RowIndex', name: 'id', orderable: true, searchable: false},
-                            {data: 'code', name: 'code', orderable: false, searchable: true},
-                            {data: 'title', name: 'product.title', orderable: false, searchable: true},
-                            {data: 'price', name: 'price', orderable: false, searchable: false},
-                            {data: 'down_payment', name: 'down_payment', orderable: false, searchable: false},
-                            {data: 'brand', name: 'product.product_brand', orderable: false, searchable: true},
-                            {data: 'brand_type', name: 'product.brand_type', orderable: false, searchable: true},
-                            {data: 'status', name: 'status', orderable: false, searchable: false},
+                            {data: 'customer', name: 'user.last_name', orderable: false, searchable: true},
+                            {data: 'code', name: 'application.code', orderable: false, searchable: true},
+                            {data: 'product', name: 'application.title', orderable: false, searchable: false},
+                            {data: 'amount', name: 'amount', orderable: false, searchable: false},
+                            {data: 'payment_date', name: 'payment_date', orderable: false, searchable: false},
                             {data: 'date', name: 'date', orderable: true, searchable: false},
                             {data: 'action', name: 'action', orderable: true, searchable: false}
                         ],
-                        order: [[7, 'desc']],
+                        order: [[4, 'desc']],
                         "initComplete": function(settings, json) { 
                                $('#loading').delay( 300 ).hide(); 
                                $("#content-table").delay( 300 ).show(); 

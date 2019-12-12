@@ -56,7 +56,8 @@
                         Your Application is <strong>{{ strtoupper($application->status) }}</strong>.
                     </div>
                     @endif
-
+                    <h3>Code: <strong>{{ $application->code }}</strong></h3>
+                    <hr/>
                     <div class="row invoice-info">
                         <div class="col-sm-4 invoice-col">
                             BASIC INFORMATION
