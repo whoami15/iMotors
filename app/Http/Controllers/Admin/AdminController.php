@@ -41,9 +41,11 @@ class AdminController extends Controller
         $applications_count = Application::count();
         $approved_applications_count = Application::where('status','APPROVED')->count();
         $products_count = Products::where('is_active',1)->count();
+        $summary = getAdminDashboardCounts();
         
         return view('admin.dashboard')
             ->with('user',$user)
+            ->with('summary',$summary)
             ->with('applications',$applications)
             ->with('applications_count',$applications_count)
             ->with('approved_applications_count',$approved_applications_count)

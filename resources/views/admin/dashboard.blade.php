@@ -57,7 +57,7 @@
             <div class="col-lg-3 col-md-3 col-sm-12">
                 <div class="small-box bg-danger">
                     <div class="inner">
-                        <h3>&#8369;10,000</h3>
+                        <h3>&#8369;{{ number_format($summary['total_due']) }}</h3>
 
                         <p>TOTAL DUE (dapat bayaran)</p>
                     </div>
