@@ -297,6 +297,7 @@ class MemberController extends Controller
             Session::flash('danger', 'Loan not found.');
             return Redirect::back();
         }
+
         //dd(number_format((float) $request->amount, 2));
         $amount = str_replace(",", "", $request->amount);
         $payment = new Payment;
@@ -304,6 +305,12 @@ class MemberController extends Controller
         $payment->application_id = $loan->id;
         $payment->amount = (float)$amount;
         $payment->payment_date = Carbon::now();
+    
+        if($request->payment_method == "REMITTANCE") {
+            $payment->payment_method = "REMITTANCE";
+            $payment->details = 'REFERENCE NO.: '.$request->reference_number. '<br>NAME: '.$request->sender_name.'<br>MOBILE: '.$request->sender_mobile;
+        }
+
         $payment->save();
 
         $loan->last_payment_date = Carbon::now();
@@ -420,6 +427,10 @@ class MemberController extends Controller
                 ->editColumn('code', function ($payments) {
                     return $payments->application->code;
                 })
+                ->editColumn('payment_method', function ($payments) {
+                    return $payments->payment_method;
+                })
+                ->editColumn('details', '{!! nl2br($details) !!}')
                 ->editColumn('product', function ($payments) {
                     return $payments->application->product->title;
                 })
@@ -437,7 +448,7 @@ class MemberController extends Controller
                     return '';
                 })
                 ->addIndexColumn()
-                ->rawColumns(['code','product','amount','payment_date','date','action'])
+                ->rawColumns(['code','payment_method','details','product','amount','payment_date','date','action'])
                 ->make(true);
 
             }else{

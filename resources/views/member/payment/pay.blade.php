@@ -21,7 +21,7 @@
         </div>
     </div>
 </div>
-<section class="content">
+<section class="content" ng-app="applicationApp" ng-controller="ApplicationCtrl as frm">
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -100,6 +100,38 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="payment_length">Mode of Payment</label>
+                                        <select class="form-control" name="payment_method" ng-model="frm.payment_method">
+                                            <option value="" selected disabled>Choose</option>
+                                            <option value="REMITTANCE">REMITTANCE</option>
+                                            <option value="PAYPAL">PAYPAL</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3" ng-if="frm.payment_method == 'REMITTANCE'">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="payment_length">Reference Number</label>
+                                        <input type="text" class="form-control" name="reference_number" value="{{ old('reference_number') }}" placeholder="Reference Number">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="payment_length">Sender Full Name</label>
+                                        <input type="text" class="form-control" name="sender_name" value="{{ old('sender_name') }}" placeholder="Sender Full Name">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="payment_length">Sender Mobile no.</label>
+                                        <input type="text" class="form-control" name="sender_mobile" value="{{ old('sender_mobile') }}" placeholder="Sender Mobile no.">
+                                    </div>
+                                </div>
+                            </div>
                             <hr/>
                             <button type="submit" id="add_product_btn" class="btn btn-primary btn-block mt-30" type="submit">PAY NOW</button>
                         </div>
@@ -111,4 +143,24 @@
 </section>                 
 @endsection
 @section('footer_scripts')
+<script src="{{ URL::asset('assets/plugins/angular/angular.min.js')  }}"></script>
+<script src="{{ URL::asset('assets/plugins/angular/angular.filter.min.js')  }}"></script>
+<script src="{{ URL::asset('assets/plugins/angular/angular-animate.min.js')  }}"></script>
+<script src="{{ URL::asset('assets/plugins/angular/angular-aria.min.js')  }}"></script>
+<script src="{{ URL::asset('assets/plugins/angular/angular-messages.min.js')  }}"></script>
+<script src="{{ URL::asset('assets/plugins/angular/angular-material.min.js')  }}"></script>
+<script src="{{ URL::asset('assets/plugins/angular/angular-sanitize.js')  }}"></script>
+<script src="{{ URL::asset('assets/plugins/ui-bootstrap/ui-bootstrap.min.js')  }}"></script>
+
+<script type="text/javascript">
+    (function () {
+        var applicationApp = angular.module('applicationApp', ['angular.filter']);
+        applicationApp.controller('ApplicationCtrl', function ($scope, $http, $sce) {
+
+            var vm = this;
+
+        });
+    })();
+
+</script>
 @stop
