@@ -44,9 +44,9 @@
             <div class="col-lg-3 col-md-3 col-sm-12">
                 <div class="small-box bg-danger">
                     <div class="inner">
-                        <h3>10,000</h3>
+                        <h3>&#8369;{{ number_format($due['total_due']) }}</h3>
 
-                        <p>DUE THIS MONTH (dapat bayaran)</p>
+                        <p>{{ $due['months_to_pay'] }} Month(s) | DUE (dapat bayaran)</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-cash"></i>
@@ -57,9 +57,9 @@
             <div class="col-lg-3 col-md-3 col-sm-12">
                 <div class="small-box bg-danger">
                     <div class="inner">
-                        <h3>10,000</h3>
+                        <h3>&#8369;{{ number_format($summary['balance']) }}</h3>
 
-                        <p>TOTAL DUE (total ng dapat bayaran)</p>
+                        <p>BALANCE (total ng dapat bayaran)</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-cash"></i>

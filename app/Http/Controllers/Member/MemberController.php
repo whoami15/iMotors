@@ -33,10 +33,12 @@ class MemberController extends Controller
         $user = Auth::user();
         $applications = Application::with('product')->orderBy('created_at','DESC')->take(5)->get();
         $summary = getDashboardCounts($user->id);
+        $due = getTotalDue($user->id);
         
         return view('member.dashboard')
             ->with('user',$user)
             ->with('summary',$summary)
+            ->with('due',$due)
             ->with('applications',$applications);      
     }
 
@@ -151,7 +153,8 @@ class MemberController extends Controller
             return Redirect::back();
         }
 
-        $monthly_payment = ($application->product->price - $application->down_payment) / $application->payment_length;
+        //$monthly_payment = ($application->product->price - $application->down_payment) / $application->payment_length;
+        $monthly_payment = getMonthlyPayment($user->id,$application->id);
 
         return view('member.application.view')
             ->with('application',$application)
@@ -226,7 +229,7 @@ class MemberController extends Controller
 
         $user = Auth::user();
 
-        $loan = Application::with('product','user','payment')->where('user_id',$user->id)->where('status','APPROVED')->first();
+        $loan = Application::with('product','user','payment')->where('id',$id)->where('user_id',$user->id)->where('status','APPROVED')->first();
 
         if(!$loan) {
 

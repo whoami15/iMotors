@@ -121,10 +121,7 @@
                         <div class="col-6">
                             <p class="lead">Info:</p>
                             <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
-                                Next payment date is 30 days after approval of application. (pag approve. update ng last_payment_date sa db)
-                            </p>
-                            <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
-                                <strong>Item price - (minus) Down payment / (divided by) Payment Length (months)</strong>
+                                Next payment date is 1 month after approval of application.
                             </p>
                         </div>
                         <!-- /.col -->
