@@ -489,7 +489,16 @@ class AdminController extends Controller
                 ->editColumn('payment_method', function ($payments) {
                     return $payments->payment_method;
                 })
-                ->editColumn('details', '{!! nl2br($details) !!}')
+                ->editColumn('details', function ($payments) {
+                    if($payments->payment_method == "REMITTANCE") {
+
+                        return nl2br($payments->details);
+                    } elseif($payments->payment_method == "PAYPAL") {
+
+                        return 'Transaction Code: '.$payments->transaction_id;
+                    }
+                })
+                //->editColumn('details', '{!! nl2br($details) !!}')
                 ->editColumn('product', function ($payments) {
                     return $payments->application->product->title;
                 })

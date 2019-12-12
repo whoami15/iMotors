@@ -4,13 +4,12 @@ function getDashboardCounts($user_id){
 
 	$user = App\Models\User::where('id', $user_id)->first();
 
-	//$application_approve_sum = $user->application()->where('status','CONFIRMED')->sum('total_fare');
-	$application_approve_count = $user->application()->where('status','APPROVED')->count();
+	$application_approved_count = $user->application()->where('status','APPROVED')->count();
 	$application_pending_count = $user->application()->where('status','PENDING')->count();
-	$application_decline_count = $user->application()->where('status', 'DECLINED')->count();
+	$application_declined_count = $user->application()->where('status','DECLINED')->count();
 
-	$loans = \App\Models\Application::with('product','user')->where('user_id',$user_id)->where('status','APPROVED')->get();
-	$payment = \App\Models\Payment::where('user_id',$user_id)->sum('amount');
+	$loans = \App\Models\Application::with('product','user')->where('user_id',$user->id)->where('status','APPROVED')->get();
+	$payment = \App\Models\Payment::where('user_id',$user->id)->sum('amount');
 
 	$total_loan = 0;
 	$total_down_payment = 0;
@@ -20,9 +19,9 @@ function getDashboardCounts($user_id){
 	$balance = $total_loan - $payment;
 
 	return array(
-		"application_approve_count" => $application_decline_count,
+		"application_approved_count" => $application_approved_count,
 		"application_pending_count" => $application_pending_count,
-		"application_decline_count" => $application_decline_count,
+		"application_declined_count" => $application_declined_count,
 		"balance" => $balance
 	);
 }

@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Application;
 use App\Models\Products;
 use App\Models\Payment;
+use App\Models\PayPal;
 use Session;
 use Redirect;
 use Cache;
@@ -299,25 +300,113 @@ class MemberController extends Controller
         }
 
         //dd(number_format((float) $request->amount, 2));
-        $amount = str_replace(",", "", $request->amount);
-        $payment = new Payment;
-        $payment->user_id = $user->id;
-        $payment->application_id = $loan->id;
-        $payment->amount = (float)$amount;
-        $payment->payment_date = Carbon::now();
-    
         if($request->payment_method == "REMITTANCE") {
+
+            $amount = str_replace(",", "", $request->amount);
+            $payment = new Payment;
+            $payment->user_id = $user->id;
+            $payment->application_id = $loan->id;
+            $payment->amount = (float)$amount;
+            $payment->payment_date = Carbon::now();
+        
             $payment->payment_method = "REMITTANCE";
             $payment->details = 'REFERENCE NO.: '.$request->reference_number. '<br>NAME: '.$request->sender_name.'<br>MOBILE: '.$request->sender_mobile;
-        }
+            
+            $payment->save();
 
-        $payment->save();
+        } elseif($request->payment_method == "PAYPAL") {
+
+            //save muna tapos sa completed kunin yung latest order by id desc 
+
+            $amount = str_replace(",", "", $request->amount);
+            
+            $payment = new Payment;
+            $payment->user_id = $user->id;
+            $payment->application_id = $loan->id;
+            $payment->amount = $amount;
+            $payment->payment_date = Carbon::now();
+            $payment->payment_method = "PAYPAL";
+            $payment->save();
+
+            $paypal = new PayPal;
+
+            $amount = str_replace(",", "", $request->amount);
+
+            $response = $paypal->purchase([
+                'amount' => $paypal->formatAmount((float)$amount),
+                'transactionId' => $loan->id,
+                'currency' => 'PHP',
+                'cancelUrl' => $paypal->getCancelUrl($loan),
+                'returnUrl' => $paypal->getReturnUrl($loan),
+            ]);
+    
+            if ($response->isRedirect()) {
+                $response->redirect();
+            }
+
+            Session::flash('danger', $response->getMessage());
+            return Redirect::back();
+
+        }
 
         $loan->last_payment_date = Carbon::now();
         $loan->save();
 
         Session::flash('success','Payment Successful.');
         return redirect('/payments');
+    }
+
+    public function completed($id, Request $request) {
+
+        $user = Auth::user();
+
+        $loan = Application::findOrFail($id);
+
+        $latest_payment = Payment::where('user_id',$user->id)->where('application_id',$loan->id)->orderBy('id','DESC')->first();
+
+        $paypal = new PayPal;
+
+        $response = $paypal->complete([
+            'amount' => $paypal->formatAmount($latest_payment->amount),
+            'transactionId' => $loan->id,
+            'currency' => 'PHP',
+            'cancelUrl' => $paypal->getCancelUrl($loan),
+            'returnUrl' => $paypal->getReturnUrl($loan),
+            'notifyUrl' => $paypal->getNotifyUrl($loan),
+        ]);
+
+        if ($response->isSuccessful()) {
+
+            $latest_payment->transaction_id = $response->getTransactionReference();
+            $latest_payment->payment_status = 1;
+            $latest_payment->payment_method = "PAYPAL";
+            $latest_payment->save();
+
+            Session::flash('success', 'You recent payment was sucessful with Reference Code: ' . $response->getTransactionReference());
+            return redirect('/loan/pay/'.$id);
+        }
+
+        Session::flash('danger', $response->getMessage());
+        return Redirect::back();
+
+    }
+
+    public function cancelled($id) {
+
+        $user = Auth::user();
+
+        $loan = Application::findOrFail($id);
+
+        $latest_payment = Payment::where('user_id',$user->id)->where('application_id',$loan->id)->orderBy('id','DESC')->first();
+        $latest_payment->delete();
+
+        Session::flash('danger', 'You have canceled your recent PayPal payment.');
+        return redirect('/loan/pay/'.$id);
+
+    }
+
+    public function webhook($order_id, $env, Request $request) {
+        // to do with new release of sudiptpa/paypal-ipn v3.0 (under development)
     }
 
     public function getMemberLoans() {

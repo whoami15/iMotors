@@ -48,6 +48,26 @@ Route::group(['middleware' => 'revalidate'],function(){
     Route::get('/payments', array('as' => 'get-member-payments-history','uses' => 'Member\MemberController@getMemberPaymentsList'));
     Route::get('/member-payments-history-data', array('as' => 'get-member-payments-history-data','uses' => 'Member\MemberController@getMemberPaymentsListData'));
 
+    // PayPal
+    
+    Route::get('/paypal/checkout/{loan}/completed', [
+        'name' => 'PayPal Express Checkout',
+        'as' => 'paypal.checkout.completed',
+        'uses' => 'Member\MemberController@completed',
+    ]);
+    
+    Route::get('/paypal/checkout/{loan}/cancelled', [
+        'name' => 'PayPal Express Checkout',
+        'as' => 'paypal.checkout.cancelled',
+        'uses' => 'Member\MemberController@cancelled',
+    ]);
+    
+    Route::post('/webhook/paypal/{loan?}/{env?}', [
+        'name' => 'PayPal Express IPN',
+        'as' => 'webhook.paypal.ipn',
+        'uses' => 'Member\MemberController@webhook',
+    ]);
+
     // # SUB ADMIN -- #
 
     Route::get('/subadmin', array('as' => 'get-subadmin-dashboard','uses' => 'Member\MemberController@getMemberDashboard'));

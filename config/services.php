@@ -35,4 +35,11 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'paypal' => [
+        'username' => 'sb-uzq2z728951_api1.business.example.com',
+        'password' => 'WX6KEG54BJMBYYP5',
+        'signature' => 'AkaCfCPJdFChNFouuytiIwXJ-IaoASEdtwWibg99-zmodWZTXufeKuVT',
+        'sandbox' => true,
+    ],
+
 ];

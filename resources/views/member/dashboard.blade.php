@@ -18,7 +18,7 @@
             <div class="col-lg-3 col-md-3 col-sm-12">
                 <div class="small-box bg-warning">
                     <div class="inner">
-                        <h3>{{ $summary['application_approve_count'] }}</h3>
+                        <h3>{{ $summary['application_pending_count'] }}</h3>
 
                         <p>PENDING APPLICATION</p>
                     </div>
@@ -31,7 +31,7 @@
             <div class="col-lg-3 col-md-3 col-sm-12">
                 <div class="small-box bg-success">
                     <div class="inner">
-                        <h3>{{ $summary['application_pending_count'] }}</h3>
+                        <h3>{{ $summary['application_approved_count'] }}</h3>
 
                         <p>APPROVED APPLICATION</p>
                     </div>

@@ -92,9 +92,9 @@
                                     @foreach($applications as $application)
                                     <tr>
                                         <td>{{ ucwords($application->user->full_name) }}</td>
-                                        <td><strong>Product 1</strong></td>
-                                        <td>Honda</td>
-                                        <td><strong>50,000</strong></td>
+                                        <td>{{ $application->product->title }}</td>
+                                        <td>{{ $application->product->product_brand }}</td>
+                                        <td>&#8369;{{ number_format($application->down_payment) }}</td>
                                         <td>{{ date('F j, Y g:i a', strtotime($application->created_at)) . ' | ' . $application->created_at->diffForHumans()}}</td>
                                         <td>
                                             <a href="{{ url('/admin/application/view/'.$application->id) }}" class="btn btn-primary btn-sm">view</a>
