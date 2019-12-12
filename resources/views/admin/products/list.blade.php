@@ -45,6 +45,7 @@
                                 <th>#</th>
                                 <th>Product Name</th>
                                 <th>Price</th>
+                                <th>Stock</th>
                                 <th>Brand</th>
                                 <th>Motor Type</th>
                                 <th>Branch</th>
@@ -121,6 +122,7 @@
                             {data: 'DT_RowIndex', name: 'id', orderable: true, searchable: false},
                             {data: 'title', name: 'title', orderable: false, searchable: true},
                             {data: 'price', name: 'price', orderable: false, searchable: false},
+                            {data: 'stock', name: 'stock', orderable: false, searchable: false},
                             {data: 'brand', name: 'product_brand', orderable: true, searchable: true},
                             {data: 'brand_type', name: 'brand_type', orderable: false, searchable: true},
                             {data: 'branch', name: 'branch', orderable: false, searchable: true},
