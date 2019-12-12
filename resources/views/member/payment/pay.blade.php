@@ -114,6 +114,17 @@
                             </div>
                             <div class="row mb-3" ng-if="frm.payment_method == 'REMITTANCE'">
                                 <div class="col-md-12">
+                                    <address>
+                                        <strong>PLEASE USE THE DETAIL BELOW UPON SENDING THE PAYMENT:</strong><br>
+                                        
+                                <hr/>
+                                        <strong>Name: </strong>Juan dela Cruz<br>
+                                        <strong>Mobile no.: </strong>09090909090<br>
+                                        <strong>Address: </strong>Address 1,<br>
+                                        <strong>Purpose: </strong>PAYMENT<br>
+                                    </address>
+                                </div>
+                                <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="payment_length">Reference Number</label>
                                         <input type="text" class="form-control" name="reference_number" value="{{ old('reference_number') }}" placeholder="Reference Number">
