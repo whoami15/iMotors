@@ -526,6 +526,7 @@ class AdminController extends Controller
     }
 
     public function postAdminPayLoan(Request $request) {
+        
         $loan = Application::with('product','user','payment')->where('code',$request->loan_code)->where('status','APPROVED')->first();
 
         if(!$loan) {
