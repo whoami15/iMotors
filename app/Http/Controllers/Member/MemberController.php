@@ -31,7 +31,7 @@ class MemberController extends Controller
     public function getMemberDashboard() {
 
         $user = Auth::user();
-        $applications = Application::with('product')->orderBy('created_at','DESC')->take(5)->get();
+        $applications = Application::with('product')->where('user_id',$user->id)->orderBy('created_at','DESC')->take(5)->get();
         $summary = getDashboardCounts($user->id);
         $due = getTotalDue($user->id);
         
