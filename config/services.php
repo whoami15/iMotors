@@ -36,9 +36,9 @@ return [
     ],
 
     'paypal' => [
-        'username' => 'sb-uzq2z728951_api1.business.example.com',
-        'password' => 'WX6KEG54BJMBYYP5',
-        'signature' => 'AkaCfCPJdFChNFouuytiIwXJ-IaoASEdtwWibg99-zmodWZTXufeKuVT',
+        'username' => 'sb-8j5qc740358_api1.business.example.com',
+        'password' => 'X5BZ6HJCPZCDR22M',
+        'signature' => 'AQxfEyfDVwEJUTRkJi7QbvY5CMohAMyHvt7Jeg4U82egdVHm-GYySZJo',
         'sandbox' => true,
     ],
 
