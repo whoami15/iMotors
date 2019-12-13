@@ -116,8 +116,7 @@
                                 <div class="col-md-12">
                                     <address>
                                         <strong>PLEASE USE THE DETAIL BELOW UPON SENDING THE PAYMENT:</strong><br>
-                                        
-                                <hr/>
+                                        <hr/>
                                         <strong>Name: </strong>Juan dela Cruz<br>
                                         <strong>Mobile no.: </strong>09090909090<br>
                                         <strong>Address: </strong>Address 1,<br>

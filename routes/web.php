@@ -48,6 +48,26 @@ Route::group(['middleware' => 'revalidate'],function(){
     Route::get('/payments', array('as' => 'get-member-payments-history','uses' => 'Member\MemberController@getMemberPaymentsList'));
     Route::get('/member-payments-history-data', array('as' => 'get-member-payments-history-data','uses' => 'Member\MemberController@getMemberPaymentsListData'));
 
+    // PayPal
+    
+    Route::get('/paypal/checkout/{loan}/completed', [
+        'name' => 'PayPal Express Checkout',
+        'as' => 'paypal.checkout.completed',
+        'uses' => 'Member\MemberController@completed',
+    ]);
+    
+    Route::get('/paypal/checkout/{loan}/cancelled', [
+        'name' => 'PayPal Express Checkout',
+        'as' => 'paypal.checkout.cancelled',
+        'uses' => 'Member\MemberController@cancelled',
+    ]);
+    
+    Route::post('/webhook/paypal/{loan?}/{env?}', [
+        'name' => 'PayPal Express IPN',
+        'as' => 'webhook.paypal.ipn',
+        'uses' => 'Member\MemberController@webhook',
+    ]);
+
     // # SUB ADMIN -- #
 
     Route::get('/subadmin', array('as' => 'get-subadmin-dashboard','uses' => 'Member\MemberController@getMemberDashboard'));
@@ -77,6 +97,10 @@ Route::group(['middleware' => 'revalidate'],function(){
 
     Route::get('/admin/payments', array('as' => 'get-admin-payments-history','uses' => 'Admin\AdminController@getAdminPaymentsList'));
     Route::get('/admin/member-payments-history-data', array('as' => 'get-admin-payments-history-data','uses' => 'Admin\AdminController@getAdminPaymentsListData'));
+
+    Route::get('/admin/payments/pending', array('as' => 'get-admin-pending-payments-history','uses' => 'Admin\AdminController@getAdminPendingPaymentsList'));
+    Route::get('/admin/member-pending-payments-history-data', array('as' => 'get-admin-payments-history-data','uses' => 'Admin\AdminController@getAdminPendingPaymentsListData'));
+    Route::post('/admin/payment/{id}/status', array('as' => 'post-admin-payment-status','uses' => 'Admin\AdminController@postAdminPaymentStatus'));
 
     Route::get('/admin/loan/pay', array('as' => 'get-admin-pay-loan','uses' => 'Admin\AdminController@getAdminPayLoan'));
     Route::post('/admin/loan/pay', array('as' => 'post-admin-pay-loan','uses' => 'Admin\AdminController@postAdminPayLoan'));

@@ -61,7 +61,7 @@
                                 <th>Amount Paid</th>
                                 <th>Payment Date</th>
                                 <th>Date</th>
-                                <th>Action</th>
+                                <th>Status</th>
                             </tr>
                             </thead>
                         </table>
@@ -139,7 +139,7 @@
                             {data: 'amount', name: 'amount', orderable: false, searchable: false},
                             {data: 'payment_date', name: 'payment_date', orderable: false, searchable: false},
                             {data: 'date', name: 'date', orderable: true, searchable: false},
-                            {data: 'action', name: 'action', orderable: true, searchable: false}
+                            {data: 'status', name: 'status', orderable: true, searchable: false}
                         ],
                         order: [[6, 'desc']],
                         "initComplete": function(settings, json) { 

@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Application;
 use App\Models\Products;
 use App\Models\Payment;
+use App\Models\PayPal;
 use Session;
 use Redirect;
 use Cache;
@@ -299,25 +300,115 @@ class MemberController extends Controller
         }
 
         //dd(number_format((float) $request->amount, 2));
-        $amount = str_replace(",", "", $request->amount);
-        $payment = new Payment;
-        $payment->user_id = $user->id;
-        $payment->application_id = $loan->id;
-        $payment->amount = (float)$amount;
-        $payment->payment_date = Carbon::now();
-    
         if($request->payment_method == "REMITTANCE") {
+
+            $amount = str_replace(",", "", $request->amount);
+            $payment = new Payment;
+            $payment->user_id = $user->id;
+            $payment->application_id = $loan->id;
+            $payment->amount = (float)$amount;
+            $payment->payment_date = Carbon::now();
+        
             $payment->payment_method = "REMITTANCE";
             $payment->details = 'REFERENCE NO.: '.$request->reference_number. '<br>NAME: '.$request->sender_name.'<br>MOBILE: '.$request->sender_mobile;
-        }
+            
+            $payment->status = 'PENDING';
+            $payment->save();
 
-        $payment->save();
+        } elseif($request->payment_method == "PAYPAL") {
+
+            //save muna tapos sa completed kunin yung latest order by id desc 
+
+            $amount = str_replace(",", "", $request->amount);
+            
+            $payment = new Payment;
+            $payment->user_id = $user->id;
+            $payment->application_id = $loan->id;
+            $payment->amount = $amount;
+            $payment->payment_date = Carbon::now();
+            $payment->payment_method = "PAYPAL";
+            $payment->status = 'PENDING';
+            $payment->save();
+
+            $paypal = new PayPal;
+
+            $amount = str_replace(",", "", $request->amount);
+
+            $response = $paypal->purchase([
+                'amount' => $paypal->formatAmount((float)$amount),
+                'transactionId' => $loan->id,
+                'currency' => 'PHP',
+                'cancelUrl' => $paypal->getCancelUrl($loan),
+                'returnUrl' => $paypal->getReturnUrl($loan),
+            ]);
+    
+            if ($response->isRedirect()) {
+                $response->redirect();
+            }
+
+            Session::flash('danger', $response->getMessage());
+            return Redirect::back();
+
+        }
 
         $loan->last_payment_date = Carbon::now();
         $loan->save();
 
-        Session::flash('success','Payment Successful.');
+        Session::flash('success','Payment has been Successfully Submitted for Review to Our Administrator.');
         return redirect('/payments');
+    }
+
+    public function completed($id, Request $request) {
+
+        $user = Auth::user();
+
+        $loan = Application::findOrFail($id);
+
+        $latest_payment = Payment::where('user_id',$user->id)->where('application_id',$loan->id)->orderBy('id','DESC')->first();
+
+        $paypal = new PayPal;
+
+        $response = $paypal->complete([
+            'amount' => $paypal->formatAmount($latest_payment->amount),
+            'transactionId' => $loan->id,
+            'currency' => 'PHP',
+            'cancelUrl' => $paypal->getCancelUrl($loan),
+            'returnUrl' => $paypal->getReturnUrl($loan),
+            'notifyUrl' => $paypal->getNotifyUrl($loan),
+        ]);
+
+        if ($response->isSuccessful()) {
+
+            $latest_payment->transaction_id = $response->getTransactionReference();
+            $latest_payment->payment_status = 1;
+            $latest_payment->payment_method = "PAYPAL";
+            $latest_payment->save();
+
+            Session::flash('success', 'Payment has been Successfully Submitted for Review to Our Administrator. Reference Code: ' . $response->getTransactionReference());
+            return redirect('/loan/pay/'.$id);
+        }
+
+        Session::flash('danger', $response->getMessage());
+        return Redirect::back();
+
+    }
+
+    public function cancelled($id) {
+
+        $user = Auth::user();
+
+        $loan = Application::findOrFail($id);
+
+        $latest_payment = Payment::where('user_id',$user->id)->where('application_id',$loan->id)->orderBy('id','DESC')->first();
+        $latest_payment->delete();
+
+        Session::flash('danger', 'You have canceled your recent PayPal payment.');
+        return redirect('/loan/pay/'.$id);
+
+    }
+
+    public function webhook($order_id, $env, Request $request) {
+        // to do with new release of sudiptpa/paypal-ipn v3.0 (under development)
     }
 
     public function getMemberLoans() {
@@ -419,7 +510,7 @@ class MemberController extends Controller
 
             $user = Auth::user();
     
-            $payments = Payment::with('application','user')->where('user_id',$user->id)->orderBy('created_at','DESC');
+            $payments = Payment::with('application','user')->where('user_id',$user->id)->where('status','APPROVED')->orderBy('created_at','DESC');
             
             if($payments) {
 
@@ -430,7 +521,16 @@ class MemberController extends Controller
                 ->editColumn('payment_method', function ($payments) {
                     return $payments->payment_method;
                 })
-                ->editColumn('details', '{!! nl2br($details) !!}')
+                ->editColumn('details', function ($payments) {
+                    if($payments->payment_method == "REMITTANCE") {
+
+                        return nl2br($payments->details);
+                    } elseif($payments->payment_method == "PAYPAL") {
+
+                        return 'Transaction Code: '.$payments->transaction_id;
+                    }
+                })
+                //->editColumn('details', '{!! nl2br($details) !!}')
                 ->editColumn('product', function ($payments) {
                     return $payments->application->product->title;
                 })
@@ -443,12 +543,17 @@ class MemberController extends Controller
                 ->addColumn('date', function ($payments) {
                     return date('F j, Y g:i a', strtotime($payments->created_at)) . ' | ' . $payments->created_at->diffForHumans();
                 })
-                ->addColumn('action', function ($payments) {
-                    //return '<a class="btn btn-primary btn-sm" href="/application/view/'.$payments->id.'">View</a>';
-                    return '';
+                ->addColumn('status', function ($payments) {
+                    if($payments->status == 'PENDING') {
+                        return '<span class="text-warning">PENDING</span>';
+                    } elseif($payments->status == 'APPROVED') {
+                        return '<span class="text-success">APPROVED</span>';
+                    } elseif($payments->status == 'DECLINED') {
+                        return '<span class="text-danger">DECLINED</span>';
+                    }
                 })
                 ->addIndexColumn()
-                ->rawColumns(['code','payment_method','details','product','amount','payment_date','date','action'])
+                ->rawColumns(['code','payment_method','details','product','amount','payment_date','date','status'])
                 ->make(true);
 
             }else{

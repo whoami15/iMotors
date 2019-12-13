@@ -76,8 +76,21 @@
                     <li class="nav-item"><a class="nav-link" href="{{ url('/') }}">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url('/shop') }}">Shop</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+                    @auth
+                    <li class="nav-item">
+                        @if(Auth::user()->role == 0)
+                        <a class="nav-link" href="{{ url('/admin') }}">Dashboard
+                        @elseif(Auth::user()->role == 1)
+                        <a class="nav-link" href="{{ url('/dashboard') }}">Dashboard
+                        @elseif(Auth::user()->role == 2)
+                        <a class="nav-link" href="{{ url('/subadmin') }}">Dashboard
+                        @endif
+                        </a>
+                    </li>
+                    @else
                     <li class="nav-item"><a class="nav-link" href="{{ url('/login') }}">Login</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url('/register') }}">Register</a></li>
+                    @endauth
                 </ul>
             </div>
         </nav>

@@ -475,7 +475,7 @@ class AdminController extends Controller
 
             $user = Auth::user();
     
-            $payments = Payment::with('application','user')->orderBy('created_at','DESC');
+            $payments = Payment::with('application','user')->where('status','APPROVED')->orderBy('created_at','DESC');
             
             if($payments) {
 
@@ -489,7 +489,16 @@ class AdminController extends Controller
                 ->editColumn('payment_method', function ($payments) {
                     return $payments->payment_method;
                 })
-                ->editColumn('details', '{!! nl2br($details) !!}')
+                ->editColumn('details', function ($payments) {
+                    if($payments->payment_method == "REMITTANCE") {
+
+                        return nl2br($payments->details);
+                    } elseif($payments->payment_method == "PAYPAL") {
+
+                        return 'Transaction Code: '.$payments->transaction_id;
+                    }
+                })
+                //->editColumn('details', '{!! nl2br($details) !!}')
                 ->editColumn('product', function ($payments) {
                     return $payments->application->product->title;
                 })
@@ -502,12 +511,17 @@ class AdminController extends Controller
                 ->addColumn('date', function ($payments) {
                     return date('F j, Y g:i a', strtotime($payments->created_at)) . ' | ' . $payments->created_at->diffForHumans();
                 })
-                ->addColumn('action', function ($payments) {
-                    //return '<a class="btn btn-primary btn-sm" href="/application/view/'.$payments->id.'">View</a>';
-                    return '';
+                ->addColumn('status', function ($payments) {
+                    if($payments->status == 'PENDING') {
+                        return '<span class="text-warning">PENDING</span>';
+                    } elseif($payments->status == 'APPROVED') {
+                        return '<span class="text-success">APPROVED</span>';
+                    } elseif($payments->status == 'DECLINED') {
+                        return '<span class="text-danger">DECLINED</span>';
+                    }
                 })
                 ->addIndexColumn()
-                ->rawColumns(['customer','payment_method','details','product','code','amount','payment_date','date','action'])
+                ->rawColumns(['customer','payment_method','details','product','code','amount','payment_date','date','status'])
                 ->make(true);
 
             }else{
@@ -610,6 +624,157 @@ class AdminController extends Controller
             return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again!'),422);
         }
                         
+    }
+
+    public function getAdminPendingPaymentsList() {
+
+        $user = Auth::user();
+        
+        return view('admin.payment.pending')->with('user',$user);      
+    }
+
+    public function getAdminPendingPaymentsListData(Request $request) {
+
+        if ($request->wantsJson()) {
+
+            $user = Auth::user();
+
+            if($request->has('sort_by')) {
+
+                $sort = $request->sort_by;
+
+                if($sort == 'RECENT'){
+
+                    $payments = Payment::with('application','user')->where('status','PENDING')->orderBy('created_at','DESC');
+                } else {
+
+                    $payments = Payment::with('application','user')->where('payment_method',$sort)->where('status','PENDING')->orderBy('created_at','DESC');
+                }
+            } else {
+
+                $payments = Payment::with('application','user')->where('status','PENDING')->orderBy('created_at','DESC');
+            }
+
+            if($payments) {
+
+                return Datatables::of($payments)
+                ->editColumn('customer', function ($payments) {
+                    return $payments->application->user->first_name .' '. $payments->application->user->last_name;
+                })
+                ->editColumn('code', function ($payments) {
+                    return $payments->application->code;
+                })
+                ->editColumn('payment_method', function ($payments) {
+                    return $payments->payment_method;
+                })
+                ->editColumn('details', function ($payments) {
+                    if($payments->payment_method == "REMITTANCE") {
+
+                        return nl2br($payments->details);
+                    } elseif($payments->payment_method == "PAYPAL") {
+
+                        return 'Transaction Code: '.$payments->transaction_id;
+                    }
+                })
+                ->editColumn('amount', function ($payments) {
+                    return '<strong>&#8369;'. number_format($payments->amount).'</strong>'; 
+                })
+                ->addColumn('payment_date', function ($payments) {
+                    return date('F j, Y g:i a', strtotime($payments->payment_date)) . ' | ' . $payments->payment_date->diffForHumans();
+                })
+                ->addColumn('status', function ($payments) {
+                    if($payments->status == 'PENDING') {
+                        return '<span class="text-warning">PENDING</span>';
+                    } elseif($payments->status == 'APPROVED') {
+                        return '<span class="text-success">APPROVED</span>';
+                    } elseif($payments->status == 'DECLINED') {
+                        return '<span class="text-danger">DECLINED</span>';
+                    }
+                })
+                ->addColumn('action', function ($payments) {
+
+                    if($payments->status == 'PENDING'){
+                        return '
+                            <small id="processing'.$payments->id.'" style="display:none">Processing... <i class="fa fa-spinner fa-spin"></i></small>
+                            <br>
+                            <select class="form-control" name="status'.$payments->id.'" id="status'.$payments->id.'"  onchange="angular.element(this).scope().frm.changestatus('.$payments->id.')" >
+                                <option selected="selected" value="PENDING">PENDING</option> 
+                                <option value="DECLINED">DECLINED</option> 
+                                <option value="APPROVED">APPROVED</option>
+                            </select>';
+
+                    } elseif ($payments->status == "DECLINED") {
+
+                        return '
+                            <small id="processing'.$payments->id.'"style="display:none">Processing... <i class="fa fa-spinner fa-spin"></i></small>
+                            <br>
+                            <select class="form-control" name="status'.$payments->id.'" id="status'.$payments->id.'"  onchange="angular.element(this).scope().frm.changestatus('.$payments->id.')" >
+                                <option value="PENDING">PENDING</option> 
+                                <option selected="selected"  value="DECLINED">DECLINED</option> 
+                                <option value="APPROVED">APPROVED</option>
+                            </select>';
+
+                    } else {
+
+                        return '';
+
+                    } 
+                })
+                ->addIndexColumn()
+                ->rawColumns(['customer','payment_method','details','code','amount','payment_date','status','action'])
+                ->make(true);
+
+            }else{
+
+                return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again.'),422);
+            }
+
+        }else{
+
+            return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again!'),422);
+        }
+
+    }
+
+    public function postAdminPaymentStatus($id, Request $request) {
+
+        if ($request->wantsJson()) {
+
+            //find payment
+            $payment = Payment::find($id);
+
+            if($payment) {
+
+                $loan = Application::find($payment->application_id);
+
+                if($loan) {
+                   
+                    $payment->status = $request->status;
+                    $payment->save();
+
+                    if($request->status == 'APPROVED') {
+
+                        $loan->last_payment_date = Carbon::now();
+                        $loan->save();
+                    }
+
+                    return response()->json(array("result"=>true,"message"=>'Status Successfully Updated'),200);
+
+                } else {
+
+                    return response()->json(array("result"=>false,"message"=>'Loan not Found.'),422);
+                }
+                         
+            } else {
+
+                return response()->json(array("result"=>false,"message"=>'Payment not Found.'),422);
+            }
+
+        } else {
+
+            return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again!'),422);
+        }
+
     }
 
 }
