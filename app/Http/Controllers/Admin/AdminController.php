@@ -659,7 +659,7 @@ class AdminController extends Controller
 
                 return Datatables::of($payments)
                 ->editColumn('customer', function ($payments) {
-                    return $payments->application->user->first_name .' '. $payments->application->user->last_name;
+                    return $payments->user->first_name .' '. $payments->user->last_name;
                 })
                 ->editColumn('code', function ($payments) {
                     return $payments->application->code;
