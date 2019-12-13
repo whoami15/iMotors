@@ -40,6 +40,9 @@ return [
         'password' => 'X5BZ6HJCPZCDR22M',
         'signature' => 'AQxfEyfDVwEJUTRkJi7QbvY5CMohAMyHvt7Jeg4U82egdVHm-GYySZJo',
         'sandbox' => true,
+        'clientId' => 'AQ9pm_DWX1G6bbVU6glc8N8SvUcwvnCaAlugL4paoqrY_DA-T5qNwj7rwiIPbVM5JBPbUI02Wi7tvWQ8',
+        'secret' => 'EPSG6HzDIq6doCeIr5UuquceB7_MkxSFuZAIYX3xkrzQ_W45B_Gg9BP0z0u4qlHLpNg8huPO67HCnzqE',
+        'live' => true,
     ],
 
 ];

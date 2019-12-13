@@ -15,12 +15,17 @@ class PayPal
      */
     public function gateway()
     {
-        $gateway = Omnipay::create('PayPal_Express');
+        //$gateway = Omnipay::create('PayPal_Express');
 
-        $gateway->setUsername(config('services.paypal.username'));
-        $gateway->setPassword(config('services.paypal.password'));
-        $gateway->setSignature(config('services.paypal.signature'));
-        $gateway->setTestMode(config('services.paypal.sandbox'));
+        //$gateway->setUsername(config('services.paypal.username'));
+        //$gateway->setPassword(config('services.paypal.password'));
+        //$gateway->setSignature(config('services.paypal.signature'));
+        //$gateway->setTestMode(config('services.paypal.sandbox'));
+
+        $gateway = Omnipay::create('PayPal_Rest');
+
+        $gateway->setClientId(config('services.paypal.clientId'));
+        $gateway->setSecret(config('services.paypal.secret'));
 
         return $gateway;
     }
