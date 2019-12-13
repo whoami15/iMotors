@@ -219,11 +219,11 @@ class MemberController extends Controller
                 })
                 ->addColumn('status', function ($applications) {
                     if($applications->status == 'PENDING') {
-                        return '<span class="text-warning">PENDING</span>';
+                        return '<span class="badge bg-warning">PENDING</span>';
                     } elseif($applications->status == 'APPROVED') {
-                        return '<span class="text-success">APPROVED</span>';
+                        return '<span class="badge bg-success">APPROVED</span>';
                     } elseif($applications->status == 'DECLINED') {
-                        return '<span class="text-danger">DECLINED</span>';
+                        return '<span class="badge bg-danger">DECLINED</span>';
                     }
                 })
                 ->addColumn('date', function ($applications) {
@@ -453,11 +453,11 @@ class MemberController extends Controller
                 })
                 ->addColumn('status', function ($applications) {
                     if($applications->status == 'PENDING') {
-                        return '<span class="text-warning">PENDING</span>';
+                        return '<span class="badge bg-warning">PENDING</span>';
                     } elseif($applications->status == 'APPROVED') {
-                        return '<span class="text-success">APPROVED</span>';
+                        return '<span class="badge bg-success">APPROVED</span>';
                     } elseif($applications->status == 'DECLINED') {
-                        return '<span class="text-danger">DECLINED</span>';
+                        return '<span class="badge bg-danger">DECLINED</span>';
                     }
                 })
                 ->addColumn('date', function ($applications) {
@@ -548,11 +548,11 @@ class MemberController extends Controller
                 })
                 ->addColumn('status', function ($payments) {
                     if($payments->status == 'PENDING') {
-                        return '<span class="text-warning">PENDING</span>';
+                        return '<span class="badge bg-warning">PENDING</span>';
                     } elseif($payments->status == 'APPROVED') {
-                        return '<span class="text-success">APPROVED</span>';
+                        return '<span class="badge bg-success">APPROVED</span>';
                     } elseif($payments->status == 'DECLINED') {
-                        return '<span class="text-danger">DECLINED</span>';
+                        return '<span class="badge bg-danger">DECLINED</span>';
                     }
                 })
                 ->addIndexColumn()

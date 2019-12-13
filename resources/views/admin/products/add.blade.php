@@ -8,6 +8,9 @@
     #editor-container {
         height: 175px;
     }
+    .form-control {
+        border: 2px solid #848484!important;
+    }
 </style>
 @stop
 
