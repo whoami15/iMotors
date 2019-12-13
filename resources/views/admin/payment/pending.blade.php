@@ -133,7 +133,7 @@
                             {data: 'customer', name: 'user.last_name', orderable: false, searchable: true},
                             {data: 'code', name: 'application.code', orderable: false, searchable: true},
                             {data: 'payment_method', name: 'payment_method', orderable: false, searchable: true},
-                            {data: 'details', name: 'details', orderable: false, searchable: false},
+                            {data: 'details', name: 'details', orderable: false, searchable: true},
                             {data: 'amount', name: 'amount', orderable: false, searchable: false},
                             {data: 'payment_date', name: 'payment_date', orderable: false, searchable: false},
                             {data: 'status', name: 'status', orderable: true, searchable: false},
