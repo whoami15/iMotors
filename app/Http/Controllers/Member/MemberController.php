@@ -528,6 +528,9 @@ class MemberController extends Controller
                     } elseif($payments->payment_method == "PAYPAL") {
 
                         return 'Transaction Code: '.$payments->transaction_id;
+                    } elseif($payments->payment_method == "ADMIN") {
+
+                        return 'Payment From Admin';
                     }
                 })
                 //->editColumn('details', '{!! nl2br($details) !!}')

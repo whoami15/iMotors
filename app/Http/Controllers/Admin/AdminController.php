@@ -496,6 +496,9 @@ class AdminController extends Controller
                     } elseif($payments->payment_method == "PAYPAL") {
 
                         return 'Transaction Code: '.$payments->transaction_id;
+                    } elseif($payments->payment_method == "ADMIN") {
+
+                        return 'Payment From Admin';
                     }
                 })
                 //->editColumn('details', '{!! nl2br($details) !!}')
@@ -568,6 +571,8 @@ class AdminController extends Controller
         $payment->application_id = $loan->id;
         $payment->amount = (float)$amount;
         $payment->payment_date = Carbon::now();
+        $payment->payment_method = 'ADMIN';
+        $payment->status = 'APPROVED';
         $payment->save();
 
         $loan->last_payment_date = Carbon::now();
@@ -674,6 +679,9 @@ class AdminController extends Controller
                     } elseif($payments->payment_method == "PAYPAL") {
 
                         return 'Transaction Code: '.$payments->transaction_id;
+                    } elseif($payments->payment_method == "ADMIN") {
+
+                        return 'Payment From Admin';
                     }
                 })
                 ->editColumn('amount', function ($payments) {
