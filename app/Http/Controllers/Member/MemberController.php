@@ -336,7 +336,7 @@ class MemberController extends Controller
 
             $response = $paypal->purchase([
                 'amount' => $paypal->formatAmount((float)$amount),
-                'transactionId' => $loan->id,
+                'transactionId' => time().$user->id.'-'.$loan->id,
                 'currency' => 'PHP',
                 'cancelUrl' => $paypal->getCancelUrl($loan),
                 'returnUrl' => $paypal->getReturnUrl($loan),
