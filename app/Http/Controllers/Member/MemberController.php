@@ -291,7 +291,7 @@ class MemberController extends Controller
         
         $user = Auth::user();
 
-        $loan = Application::with('product','user','payment')->where('user_id',$user->id)->where('status','APPROVED')->first();
+        $loan = Application::with('product','user','payment')->where('id',$id)->where('user_id',$user->id)->where('status','APPROVED')->first();
 
         if(!$loan) {
 
