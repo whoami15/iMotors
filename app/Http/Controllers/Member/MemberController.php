@@ -314,6 +314,9 @@ class MemberController extends Controller
             
             $payment->status = 'PENDING';
             $payment->save();
+            
+            $loan->last_payment_date = Carbon::now();
+            $loan->save();
 
         } elseif($request->payment_method == "PAYPAL") {
 
@@ -329,6 +332,9 @@ class MemberController extends Controller
             $payment->payment_method = "PAYPAL";
             $payment->status = 'PENDING';
             $payment->save();
+ 
+            $loan->last_payment_date = Carbon::now();
+            $loan->save();
 
             $paypal = new PayPal;
 
@@ -350,9 +356,6 @@ class MemberController extends Controller
             return Redirect::back();
 
         }
-
-        $loan->last_payment_date = Carbon::now();
-        $loan->save();
 
         Session::flash('success','Payment has been Successfully Submitted for Review to Our Administrator.');
         return redirect('/payments');
