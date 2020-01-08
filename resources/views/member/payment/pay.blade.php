@@ -91,7 +91,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="payment_length">Payment this Month</label>
+                                        <label for="payment_length">Payment for this Month</label>
                                         @if($months_to_pay > 0)
                                         <input type="text" class="form-control" name="amount" value="{{ number_format($monthly_payment * $months_to_pay) }}" placeholder="Monthly Payment multiply by month" readonly required>
                                         @else
