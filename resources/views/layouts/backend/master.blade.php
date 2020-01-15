@@ -17,7 +17,7 @@
   <meta property="og:image:width" content="400"> 
   <meta property="og:image:height" content="300">
   <meta property="og:description" content="iMotors Motor Loan Services the Official Website of Motorlandia">
-  <meta property="og:url" content="https://imotors.com">
+  <meta property="og:url" content="http://motorlandiacalapan2.com">
   <meta property="og:site_name" content="iMotors Motor Loan Services the Official Website of Motorlandia">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image:alt" content="Cover">
