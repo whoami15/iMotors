@@ -30,7 +30,7 @@ class RegisterRequest extends FormRequest
             'last_name' => 'required|min:1|max:50',
             'middle_name' => 'required|min:1|max:50',
             'first_name' => 'required|min:1|max:50',
-            'mobile' => 'required|numeric|min:11',
+            'mobile' => 'required|numeric|min:11|unique:tbl_users,mobile',
             'gender'=> 'required|in:MALE,FEMALE',
             'birth_date' => 'required|date',
             'barangay' => 'required',
