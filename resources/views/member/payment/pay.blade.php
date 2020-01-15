@@ -52,7 +52,10 @@
 
                     @if($loan)
                     <h3 class="text-center text-bold mb-2 mt-2">BALANCE: &#8369;{{ number_format($balance) }}</h3>
-                    <h3 class="text-center text-bold mb-5 mt-2"><u>No. of Month(s) to Pay: {{ $months_to_pay }} (&#8369;{{ number_format($monthly_payment * $months_to_pay) }})</u></h3>
+                    <h3 class="text-center text-bold mt-2 mt-2"><u>No. of Month(s) to Pay: {{ $months_to_pay }} (&#8369;{{ number_format($monthly_payment * $months_to_pay) }})</u></h3>
+                    @if($plus_due >= 3)
+                        <h3 class="text-center text-bold mb-5 mt-2"><u>Plus Due: &#8369;{{ number_format($plus_due_amount) }}</u></h3>
+                        @endif
                     @endif
                     
                     <form method="POST" action="{{ url('/loan/'.$loan->id.'/pay') }}" autocomplete="off" accept-charset="utf-8" enctype="multipart/form-data" id="addForm">
@@ -93,7 +96,7 @@
                                     <div class="form-group">
                                         <label for="payment_length">Payment for this Month</label>
                                         @if($months_to_pay > 0)
-                                        <input type="text" class="form-control" name="amount" value="{{ number_format($monthly_payment * $months_to_pay) }}" placeholder="Monthly Payment multiply by month" readonly required>
+                                        <input type="text" class="form-control" name="amount" value="{{ number_format(($monthly_payment * $months_to_pay) + $plus_due_amount) }}" placeholder="Monthly Payment multiply by month" readonly required>
                                         @else
                                         <input type="text" class="form-control" name="amount" value="{{ number_format($monthly_payment) }}" placeholder="Monthly Payment multiply by month" readonly required>
                                         @endif
@@ -115,7 +118,7 @@
                             <div class="row mb-3" ng-if="frm.payment_method == 'REMITTANCE'">
                                 <div class="col-md-12">
                                     <address>
-                                        <strong>PLEASE USE THE DETAIL BELOW UPON SENDING THE PAYMENT:</strong><br>
+                                        <strong>PLEASE USE THE DETAILS BELOW UPON SENDING THE PAYMENT:</strong><br>
                                         <hr/>
                                         <strong>Name: </strong>Juan dela Cruz<br>
                                         <strong>Mobile no.: </strong>09090909090<br>

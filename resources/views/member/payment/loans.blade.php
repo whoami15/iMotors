@@ -58,7 +58,7 @@
                                 <th>Product</th>
                                 <th>Total</th>
                                 <th>Down Payment</th>
-                                <th>Months UNPAID</th>
+                                <th>Months TO PAY</th>
                                 <th>Status</th>
                                 <th>Date</th>
                                 <th>Action</th>

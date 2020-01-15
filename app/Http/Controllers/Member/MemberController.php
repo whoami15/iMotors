@@ -273,6 +273,21 @@ class MemberController extends Controller
 
         $months_to_pay = $past->diffInMonths($dt);
 
+        $diff_in_days = $past->diffInDays($dt);
+
+        $plus_due = 0;
+
+        $plus_due_amount = 0;
+
+        if($diff_in_days > 30) {
+
+            $plus_due = $diff_in_days - 30;
+
+            $plus_due_amount = $monthly_payment * 0.05;
+        }
+
+        
+
         //if($months_to_pay == 0) {
 
         //    Session::flash('danger', 'Nothing to Pay.');
@@ -283,6 +298,8 @@ class MemberController extends Controller
             ->with('user',$user)
             ->with('loan',$loan)
             ->with('months_to_pay',$months_to_pay)
+            ->with('plus_due',$plus_due)
+            ->with('plus_due_amount',$plus_due_amount)
             ->with('monthly_payment',$monthly_payment)
             ->with('balance',$balance);
     }
@@ -449,7 +466,7 @@ class MemberController extends Controller
                     if($applications->payment) {
                         $past = Carbon::parse($applications->last_payment_date);
                         $final = $past->format('Y-m-d');
-                        return $past->diffInMonths($dt). ' MONTH(s)';
+                        return '<span class="badge bg-danger">'. $past->diffInMonths($dt). ' MONTH(s)</span>';
                     } else {
                         return 'NONE';
                     }

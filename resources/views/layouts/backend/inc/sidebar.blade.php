@@ -67,12 +67,12 @@
 								<p>Payment History</p>
 							</a>
 						</li>
-						<li class="nav-item">
+						<!--li class="nav-item">
 							<a href="{{ url('/') }}" class="nav-link">
 								<i class="far fa-circle nav-icon"></i>
 								<p>Due</p>
 							</a>
-						</li>
+						</li-->
 					</ul>
 				</li>
 				@elseif(Auth::user()->role == 2)
@@ -176,12 +176,12 @@
 								<p>Paid</p>
 							</a>
 						</li>
-						<li class="nav-item">
+						<!--li class="nav-item">
 							<a href="{{ url('/') }}" class="nav-link">
 								<i class="far fa-circle nav-icon"></i>
 								<p>Due</p>
 							</a>
-						</li>
+						</li-->
 					</ul>
 				</li>
 				@endif
