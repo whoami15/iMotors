@@ -284,7 +284,12 @@ class MemberController extends Controller
 
             $plus_due = $diff_in_days - 30;
 
-            $plus_due_amount = $monthly_payment * 0.05;
+            if($plus_due >= 3) {
+
+                $plus_due = 3;
+                
+                $plus_due_amount = $monthly_payment * 0.05;
+            }
         }
 
         
