@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
 class Application extends Model
@@ -32,8 +33,17 @@ class Application extends Model
         return $this->hasMany('App\Models\Payment', 'application_id', 'id');
     }
 
-	//public function extra_fee(){
-    //    return $this->hasMany('App\Models\BookingExtraFee', 'booking_id', 'id');
-    //}
+	public static function salesAnalytics()
+    {
+        return static::selectRaw('SUM(down_payment) as total')
+            ->selectRaw('COUNT(*) as total_orders')
+            ->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])
+            ->where('status', 'APPROVED')
+            ->selectRaw('EXTRACT(DAY FROM created_at) as day')
+            ->selectRaw('DATE_FORMAT(created_at, "%W") as a')
+            ->groupBy(DB::raw('EXTRACT(DAY FROM created_at)'))
+            ->orderby('day')
+            ->get();
+    }
 	
 }

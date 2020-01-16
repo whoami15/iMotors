@@ -42,8 +42,33 @@ class AdminController extends Controller
         $approved_applications_count = Application::where('status','APPROVED')->count();
         $products_count = Products::where('is_active',1)->count();
         $summary = getAdminDashboardCounts();
+
+        //sales per week
+        $data_sales_week = Application::salesAnalytics();
+
+        for ($i = 1; $i < 6; $i++) {
+            $arrTotalsAmount_year1[$i] = 0;
+        }
+        //dd($data);
+        $days = array(
+            'Sunday' => 'Sunday',
+            'Monday' => 'Monday',
+            'Tuesday' => 'Tuesday',
+            'Wednesday' => 'Wednesday',
+            'Thursday' => 'Thursday',
+            'Friday' => 'Friday',
+            'Saturday' => 'Saturday'
+        );
+        foreach($data_sales_week as $key => $value) {
+            $key_month = array_search($value->a, $days);
+            $arrTotalsAmount_year1[$key_month] = $value->total;
+           // echo $value->total;
+        }
+
+        $data['arrTotalsAmount_year1'] = '[' . implode(',', $arrTotalsAmount_year1) . ']';
         
         return view('admin.dashboard')
+            ->with('data',$data)
             ->with('user',$user)
             ->with('summary',$summary)
             ->with('applications',$applications)
