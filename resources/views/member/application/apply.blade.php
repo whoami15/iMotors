@@ -166,13 +166,13 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="birth_date">Birthdate</label>
-                                    <input type="date" class="form-control" name="birth_date" placeholder="Birthdate" max="2005-01-01" min="1930-01-01" format="yyyy-mm-dd" id="birth_date" required>
+                                    <input type="date" class="form-control" name="birth_date" placeholder="Birthdate" max="2005-01-01" min="1930-01-01" format="yyyy-mm-dd" id="birth_date" id="birth_date" onchange="submitBday()" id="birth_date" onchange="submitBday()" required>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="age">Age</label>
-                                    <input type="text" class="form-control" name="age" value="{{ old('age') }}" placeholder="Age" required>
+                                    <input type="text" class="form-control" name="age" value="{{ old('age') }}" placeholder="Age" id="age" readonly required>
                                 </div>
                             </div>
                         </div>
@@ -238,5 +238,15 @@
             $(this).append("<textarea name='description' style='display:none'>"+hvalue+"</textarea>");
         });
     });
+</script>
+<script>
+    function submitBday() {
+        var Q4A = "";
+        var Bdate = document.getElementById('birth_date').value;
+        var Bday = +new Date(Bdate);
+        Q4A +=  ~~ ((Date.now() - Bday) / (31557600000));
+        var theBday = document.getElementById('age');
+        theBday.value = Q4A;
+    }
 </script>
 @stop

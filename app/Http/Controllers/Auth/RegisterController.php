@@ -101,6 +101,7 @@ class RegisterController extends Controller
             $user->barangay = $request->barangay;
             $user->municipal = $request->municipal;
             $user->province = $request->province;
+            $user->age = $request->age;
             $user->nearest_branch = $request->nearest_branch;
             $user->role = 1;
             $user->save();

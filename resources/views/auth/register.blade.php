@@ -93,7 +93,15 @@
                     </div>
                     <div class="col-md-6">
                         <div class="input-group mb-3">
-                            <input type="date" class="form-control" placeholder="Birthdate" name="birth_date" max="2005-01-01" min="1930-01-01" format="yyyy-mm-dd" id="birth_date" required>
+                            <input type="date" class="form-control" placeholder="Birthdate" name="birth_date" max="2005-01-01" min="1930-01-01" format="yyyy-mm-dd" id="birth_date" onchange="submitBday()" required>
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-calendar"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Age" name="age" id="age" readonly required>
                             <div class="input-group-append">
                                 <div class="input-group-text">
                                     <span class="fas fa-calendar"></span>
@@ -173,3 +181,15 @@
     </div>
 </div>
 @endsection
+@section('footer_scripts')
+<script>
+    function submitBday() {
+        var Q4A = "";
+        var Bdate = document.getElementById('birth_date').value;
+        var Bday = +new Date(Bdate);
+        Q4A +=  ~~ ((Date.now() - Bday) / (31557600000));
+        var theBday = document.getElementById('age');
+        theBday.value = Q4A;
+    }
+</script>
+@stop

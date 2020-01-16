@@ -62,6 +62,7 @@
                                 <th>Payment Date</th>
                                 <th>Date</th>
                                 <th>Status</th>
+                                <th>Action</th>
                             </tr>
                             </thead>
                         </table>
@@ -139,9 +140,10 @@
                             {data: 'amount', name: 'amount', orderable: false, searchable: false},
                             {data: 'payment_date', name: 'payment_date', orderable: false, searchable: false},
                             {data: 'date', name: 'date', orderable: true, searchable: false},
-                            {data: 'status', name: 'status', orderable: true, searchable: false}
+                            {data: 'status', name: 'status', orderable: true, searchable: false},
+                            {data: 'action', name: 'action', orderable: false, searchable: false}
                         ],
-                        order: [[6, 'desc']],
+                        order: [[7, 'desc']],
                         "initComplete": function(settings, json) { 
                                $('#loading').delay( 300 ).hide(); 
                                $("#content-table").delay( 300 ).show(); 

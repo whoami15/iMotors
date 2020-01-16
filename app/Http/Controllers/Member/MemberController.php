@@ -154,6 +154,7 @@ class MemberController extends Controller
         $payment->user_id = $user->id;
         $payment->application_id = $application->id;
         $payment->amount = $request->down_payment;
+        $payment->status = 'PENDING';
         $payment->payment_date = Carbon::now();
         $payment->save();
 
@@ -575,8 +576,11 @@ class MemberController extends Controller
                         return '<span class="badge bg-danger">DECLINED</span>';
                     }
                 })
+                ->addColumn('action', function ($payments) {
+                    return '<a class="btn btn-danger btn-block" href="/payment/invoice/'.$payments->id.'"><strong>Invoice</strong></a>';
+                })
                 ->addIndexColumn()
-                ->rawColumns(['code','payment_method','details','product','amount','payment_date','date','status'])
+                ->rawColumns(['code','payment_method','details','product','amount','payment_date','date','status','action'])
                 ->make(true);
 
             }else{
@@ -589,6 +593,19 @@ class MemberController extends Controller
             return response()->json(array("result"=>false,"message"=>'Something went wrong. Please try again!'),422);
         }
                         
+    }
+
+    public function getMemberPaymentInvoice(Request $request, $id) {
+
+        $user = Auth::user();
+    
+        $payment = Payment::with('application','user')->where('user_id',$user->id)->where('id',$id)->first();
+
+        if(!$payment) {
+            Session::flash('danger', 'Payment not found.');
+            return redirect('/payments');
+        } 
+        return view('member.payment.print')->with('payment',$payment);
     }
 
 }
