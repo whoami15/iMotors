@@ -46,24 +46,62 @@ class AdminController extends Controller
         //sales per week
         $data_sales_week = Application::salesAnalytics();
 
-        for ($i = 1; $i < 6; $i++) {
+        for ($i = 1; $i < 7; $i++) {
             $arrTotalsAmount_year1[$i] = 0;
         }
-        //dd($data);
+        //dd($data_sales_week);
         $days = array(
-            'Sunday' => 'Sunday',
             'Monday' => 'Monday',
             'Tuesday' => 'Tuesday',
             'Wednesday' => 'Wednesday',
             'Thursday' => 'Thursday',
             'Friday' => 'Friday',
-            'Saturday' => 'Saturday'
+            'Saturday' => 'Saturday',
+            'Sunday' => 'Sunday',
         );
+
+        $film = array (
+
+            "Monday" => array (
+                0 => 1,
+                1 => "Monday"
+            ),
+            "Tuesday" => array (
+                0 => 2,
+                1 => "Tuesday"
+            ),
+            "Wednesday" => array (
+                0 => 3,
+                1 => "Wednesday"
+            ),
+            "Thursday" => array (
+                0 => 4,
+                1 => "Thursday"
+            ),
+            "Friday" => array (
+                0 => 5,
+                1 => "Friday"
+            ),
+            "Saturday" => array (
+                0 => 6,
+                1 => "Saturday"
+            ),
+            "Sunday" => array (
+                0 => 7,
+                1 => "Sunday"
+            )
+
+        );
+
+       // print_r($film);
+
         foreach($data_sales_week as $key => $value) {
             $key_month = array_search($value->a, $days);
-            $arrTotalsAmount_year1[$key_month] = $value->total;
-           // echo $value->total;
+            //dd($key_month);
+            $arrTotalsAmount_year1[$film[$key_month][0]] = $value->total;
         }
+
+        //dd($arrTotalsAmount_year1);
 
         $data['arrTotalsAmount_year1'] = '[' . implode(',', $arrTotalsAmount_year1) . ']';
         
