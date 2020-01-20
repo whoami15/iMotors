@@ -83,6 +83,70 @@
             </div>
         </div>
         <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Sales By Current Month-Year</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive search-terms">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Month-Year</th>
+                                        <th>Total Sales</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($salesMonth as $sale)
+                                        <tr>
+                                            <td>{{ date('F', strtotime($sale->full_date)) . ' - ' . $sale->year }}</td>
+                                            <td>&#8369;{{ number_format($sale->total) }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td class="empty" colspan="5">No data</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Sales By Year</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive search-terms">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Year</th>
+                                        <th>Total Sales</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($salesYear as $sale)
+                                        <tr>
+                                            <td>{{ $sale->year }}</td>
+                                            <td>&#8369;{{ number_format($sale->total) }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td class="empty" colspan="5">No data</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">

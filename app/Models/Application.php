@@ -45,5 +45,23 @@ class Application extends Model
             ->orderby('day')
             ->get();
     }
+
+    public static function totalSalesMonth()
+    {
+        $data = static::select(DB::raw('sum(down_payment) as `total`'), DB::raw('created_at as `full_date`'), DB::raw("DATE_FORMAT(created_at, '%m-%Y') new_date"),  DB::raw('YEAR(created_at) year, MONTH(created_at) month'))
+            ->where('status', 'APPROVED')
+            ->groupby('year','month')
+            ->get();
+        return $data;
+    }
+
+    public static function totalSalesYear()
+    {
+        $data = static::select(DB::raw('sum(down_payment) as `total`'), DB::raw("DATE_FORMAT(created_at, '%m-%Y') new_date"),  DB::raw('YEAR(created_at) year, MONTH(created_at) month'))
+            ->where('status', 'APPROVED')
+            ->groupby('year')
+            ->get();
+        return $data;
+    }
 	
 }

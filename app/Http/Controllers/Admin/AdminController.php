@@ -107,6 +107,8 @@ class AdminController extends Controller
         
         return view('admin.dashboard')
             ->with('data',$data)
+            ->with('salesMonth',Application::totalSalesMonth())
+            ->with('salesYear',Application::totalSalesYear())
             ->with('user',$user)
             ->with('summary',$summary)
             ->with('applications',$applications)
